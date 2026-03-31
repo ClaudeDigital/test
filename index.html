@@ -6,7 +6,6 @@
   <title>Kai Voss — Developer</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
       --bg: #0a0a0f;
       --surface: #13131a;
@@ -16,23 +15,15 @@
       --text: #e2e2f0;
       --muted: #8888aa;
     }
-
     html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-    }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
 
     /* NAV */
     nav {
       position: fixed; top: 0; width: 100%; z-index: 100;
       display: flex; justify-content: space-between; align-items: center;
       padding: 1.2rem 6%;
-      background: rgba(10,10,15,0.85);
-      backdrop-filter: blur(12px);
+      background: rgba(10,10,15,0.85); backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
     }
     .logo { font-weight: 700; font-size: 1.2rem; color: var(--accent); letter-spacing: 1px; }
@@ -44,105 +35,105 @@
     #hero {
       min-height: 100vh;
       display: flex; align-items: center; justify-content: center;
-      text-align: center; padding: 6rem 6% 4rem;
-      background: radial-gradient(ellipse at 50% 0%, rgba(124,106,255,.15) 0%, transparent 70%);
+      padding: 6rem 6% 4rem;
+      background: radial-gradient(ellipse at 60% 0%, rgba(124,106,255,.18) 0%, transparent 65%),
+                  radial-gradient(ellipse at 20% 80%, rgba(255,106,138,.1) 0%, transparent 60%);
     }
-    .hero-inner { max-width: 700px; }
+    .hero-inner {
+      display: grid; grid-template-columns: 1fr auto; gap: 4rem;
+      align-items: center; max-width: 1000px; width: 100%;
+    }
     .badge {
-      display: inline-block; margin-bottom: 1.5rem;
+      display: inline-block; margin-bottom: 1.2rem;
       padding: .35rem 1rem; border-radius: 99px;
       border: 1px solid var(--accent); color: var(--accent);
-      font-size: .8rem; letter-spacing: 1px; text-transform: uppercase;
+      font-size: .78rem; letter-spacing: 1px; text-transform: uppercase;
     }
-    h1 { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 800; line-height: 1.15; margin-bottom: 1.2rem; }
+    h1 { font-size: clamp(2.2rem, 5vw, 3.6rem); font-weight: 800; line-height: 1.15; margin-bottom: 1rem; }
     h1 span { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .hero-sub { font-size: 1.1rem; color: var(--muted); margin-bottom: 2.5rem; }
-    .cta-group { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-    .btn {
-      padding: .75rem 1.8rem; border-radius: 8px; font-size: .95rem;
-      cursor: pointer; text-decoration: none; font-weight: 600; transition: all .2s;
-    }
+    .hero-sub { font-size: 1.05rem; color: var(--muted); margin-bottom: 2rem; max-width: 480px; }
+    .cta-group { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn { padding: .75rem 1.8rem; border-radius: 8px; font-size: .95rem; cursor: pointer; text-decoration: none; font-weight: 600; transition: all .2s; }
     .btn-primary { background: var(--accent); color: #fff; border: none; }
     .btn-primary:hover { filter: brightness(1.15); transform: translateY(-2px); }
     .btn-outline { border: 1px solid var(--border); color: var(--text); background: transparent; }
     .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
 
+    /* AVATAR */
+    .hero-avatar { position: relative; flex-shrink: 0; }
+    .avatar-ring {
+      width: 260px; height: 260px; border-radius: 50%;
+      padding: 4px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+    }
+    .avatar-ring img {
+      width: 100%; height: 100%; border-radius: 50%;
+      object-fit: cover; display: block;
+      border: 4px solid var(--bg);
+    }
+    .avatar-badge {
+      position: absolute; bottom: 10px; right: 10px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: .4rem .8rem;
+      font-size: .78rem; color: var(--text); display: flex; align-items: center; gap: .4rem;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
     /* SECTIONS */
     section { padding: 5rem 6%; }
-    .section-label {
-      font-size: .8rem; text-transform: uppercase; letter-spacing: 2px;
-      color: var(--accent); margin-bottom: .5rem;
-    }
+    .section-label { font-size: .78rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); margin-bottom: .4rem; }
     .section-title { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 700; margin-bottom: 3rem; }
 
     /* ABOUT */
     #about { border-top: 1px solid var(--border); }
-    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; max-width: 1000px; }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; max-width: 1000px; }
     .about-text p { color: var(--muted); margin-bottom: 1rem; }
     .skills { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1.5rem; }
-    .skill-tag {
-      padding: .3rem .9rem; border-radius: 6px;
-      background: var(--surface); border: 1px solid var(--border);
-      font-size: .8rem; color: var(--muted);
-    }
-    .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-    .stat-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 12px; padding: 1.5rem; text-align: center;
-    }
-    .stat-num { font-size: 2.2rem; font-weight: 800; color: var(--accent); }
-    .stat-label { font-size: .85rem; color: var(--muted); margin-top: .25rem; }
+    .skill-tag { padding: .3rem .9rem; border-radius: 6px; background: var(--surface); border: 1px solid var(--border); font-size: .8rem; color: var(--muted); }
+    .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.4rem; text-align: center; }
+    .stat-num { font-size: 2rem; font-weight: 800; color: var(--accent); }
+    .stat-label { font-size: .82rem; color: var(--muted); margin-top: .2rem; }
 
     /* PROJECTS */
     #projects { border-top: 1px solid var(--border); background: var(--surface); }
-    .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+    .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
     .project-card {
       background: var(--bg); border: 1px solid var(--border);
-      border-radius: 14px; padding: 1.8rem; transition: all .25s;
-      display: flex; flex-direction: column; gap: .8rem;
+      border-radius: 14px; overflow: hidden; transition: all .25s;
+      display: flex; flex-direction: column;
     }
-    .project-card:hover { border-color: var(--accent); transform: translateY(-4px); }
-    .project-top { display: flex; justify-content: space-between; align-items: flex-start; }
-    .project-icon { font-size: 1.8rem; }
-    .project-links { display: flex; gap: .5rem; }
-    .project-links a { color: var(--muted); font-size: .8rem; text-decoration: none; padding: .2rem .6rem; border: 1px solid var(--border); border-radius: 6px; transition: all .2s; }
+    .project-card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 20px 40px rgba(124,106,255,.1); }
+    .project-thumb { width: 100%; height: 180px; object-fit: cover; display: block; }
+    .project-body { padding: 1.4rem; display: flex; flex-direction: column; gap: .7rem; flex: 1; }
+    .project-top { display: flex; justify-content: space-between; align-items: center; }
+    .project-icon { font-size: 1.4rem; }
+    .project-links { display: flex; gap: .4rem; }
+    .project-links a { color: var(--muted); font-size: .78rem; text-decoration: none; padding: .2rem .6rem; border: 1px solid var(--border); border-radius: 6px; transition: all .2s; }
     .project-links a:hover { color: var(--accent); border-color: var(--accent); }
-    .project-card h3 { font-size: 1.1rem; font-weight: 700; }
-    .project-card p { font-size: .88rem; color: var(--muted); flex: 1; }
-    .project-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .5rem; }
-    .project-tags span {
-      font-size: .75rem; padding: .2rem .6rem;
-      background: rgba(124,106,255,.1); color: var(--accent);
-      border-radius: 5px;
-    }
+    .project-card h3 { font-size: 1.05rem; font-weight: 700; }
+    .project-card p { font-size: .86rem; color: var(--muted); flex: 1; }
+    .project-tags { display: flex; flex-wrap: wrap; gap: .4rem; }
+    .project-tags span { font-size: .73rem; padding: .2rem .6rem; background: rgba(124,106,255,.1); color: var(--accent); border-radius: 5px; }
 
     /* CONTACT */
     #contact { border-top: 1px solid var(--border); text-align: center; }
-    .contact-box {
-      max-width: 540px; margin: 0 auto;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 16px; padding: 3rem;
-    }
+    .contact-box { max-width: 540px; margin: 0 auto; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 3rem; }
     .contact-box p { color: var(--muted); margin-bottom: 2rem; }
     .contact-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
-    .contact-link {
-      display: flex; align-items: center; gap: .5rem;
-      padding: .65rem 1.4rem; border-radius: 8px;
-      border: 1px solid var(--border); color: var(--text);
-      text-decoration: none; font-size: .9rem; transition: all .2s;
-    }
+    .contact-link { display: flex; align-items: center; gap: .5rem; padding: .65rem 1.4rem; border-radius: 8px; border: 1px solid var(--border); color: var(--text); text-decoration: none; font-size: .9rem; transition: all .2s; }
     .contact-link:hover { border-color: var(--accent); color: var(--accent); }
 
-    /* FOOTER */
-    footer {
-      text-align: center; padding: 2rem;
-      border-top: 1px solid var(--border); color: var(--muted); font-size: .85rem;
-    }
+    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--muted); font-size: .85rem; }
 
-    /* RESPONSIVE */
-    @media (max-width: 700px) {
+    @media (max-width: 800px) {
+      .hero-inner { grid-template-columns: 1fr; text-align: center; }
+      .hero-inner .hero-text .cta-group { justify-content: center; }
+      .hero-inner .hero-text .hero-sub { margin: 0 auto 2rem; }
+      .hero-avatar { display: flex; justify-content: center; order: -1; }
+      .avatar-ring { width: 200px; height: 200px; }
       .about-grid { grid-template-columns: 1fr; gap: 2rem; }
-      .nav-links { gap: 1rem; }
     }
   </style>
 </head>
@@ -160,12 +151,20 @@
 <!-- HERO -->
 <section id="hero">
   <div class="hero-inner">
-    <div class="badge">Open to opportunities</div>
-    <h1>Hi, I'm <span>Kai Voss</span></h1>
-    <p class="hero-sub">Backend-leaning full-stack developer. I obsess over clean architecture, fast infrastructure, and things that just work.</p>
-    <div class="cta-group">
-      <a href="#projects" class="btn btn-primary">See my work</a>
-      <a href="#contact" class="btn btn-outline">Say hello</a>
+    <div class="hero-text">
+      <div class="badge">Open to opportunities</div>
+      <h1>Hi, I'm <span>Kai Voss</span></h1>
+      <p class="hero-sub">Backend-leaning full-stack developer. I obsess over clean architecture, fast infrastructure, and things that just work.</p>
+      <div class="cta-group">
+        <a href="#projects" class="btn btn-primary">See my work</a>
+        <a href="#contact" class="btn btn-outline">Say hello</a>
+      </div>
+    </div>
+    <div class="hero-avatar">
+      <div class="avatar-ring">
+        <img src="https://api.dicebear.com/9.x/lorelei/svg?seed=KaiVoss&backgroundColor=1a1a2e&radius=50" alt="Kai Voss avatar" />
+      </div>
+      <div class="avatar-badge"><span class="dot"></span> Available for work</div>
     </div>
   </div>
 </section>
@@ -209,81 +208,81 @@
   <div class="projects-grid">
 
     <div class="project-card">
-      <div class="project-top">
-        <div class="project-icon">🛰️</div>
-        <div class="project-links">
-          <a href="#">GitHub</a>
-          <a href="#">Live</a>
+      <img class="project-thumb" src="https://picsum.photos/seed/orbitly/600/300" alt="Orbitly" />
+      <div class="project-body">
+        <div class="project-top">
+          <div class="project-icon">🛰️</div>
+          <div class="project-links"><a href="#">GitHub</a><a href="#">Live</a></div>
         </div>
+        <h3>Orbitly</h3>
+        <p>Real-time flight tracking dashboard pulling live ADS-B data. Renders 10k+ aircraft positions on a WebGL map without breaking a sweat.</p>
+        <div class="project-tags"><span>Go</span><span>WebGL</span><span>WebSocket</span><span>Redis</span></div>
       </div>
-      <h3>Orbitly</h3>
-      <p>A real-time flight tracking dashboard pulling live ADS-B data. Renders 10k+ aircraft positions on a WebGL map without breaking a sweat.</p>
-      <div class="project-tags"><span>Go</span><span>WebGL</span><span>WebSocket</span><span>Redis</span></div>
     </div>
 
     <div class="project-card">
-      <div class="project-top">
-        <div class="project-icon">🔐</div>
-        <div class="project-links">
-          <a href="#">GitHub</a>
-          <a href="#">Live</a>
+      <img class="project-thumb" src="https://picsum.photos/seed/vaultkey/600/300" alt="Vaultkey" />
+      <div class="project-body">
+        <div class="project-top">
+          <div class="project-icon">🔐</div>
+          <div class="project-links"><a href="#">GitHub</a><a href="#">Live</a></div>
         </div>
+        <h3>Vaultkey</h3>
+        <p>Self-hosted password manager with end-to-end encryption, browser extension, and zero-knowledge architecture. Because cloud vaults aren't yours.</p>
+        <div class="project-tags"><span>TypeScript</span><span>React</span><span>AES-256</span><span>SQLite</span></div>
       </div>
-      <h3>Vaultkey</h3>
-      <p>A self-hosted password manager with end-to-end encryption, browser extension, and zero-knowledge architecture. Because cloud vaults aren't yours.</p>
-      <div class="project-tags"><span>TypeScript</span><span>React</span><span>AES-256</span><span>SQLite</span></div>
     </div>
 
     <div class="project-card">
-      <div class="project-top">
-        <div class="project-icon">📊</div>
-        <div class="project-links">
-          <a href="#">GitHub</a>
-          <a href="#">Live</a>
+      <img class="project-thumb" src="https://picsum.photos/seed/pulsar42/600/300" alt="Pulsar" />
+      <div class="project-body">
+        <div class="project-top">
+          <div class="project-icon">📊</div>
+          <div class="project-links"><a href="#">GitHub</a><a href="#">Live</a></div>
         </div>
+        <h3>Pulsar</h3>
+        <p>Lightweight server monitoring agent. Streams CPU, RAM, disk, and network metrics to a clean dashboard. No cloud dependency, no telemetry.</p>
+        <div class="project-tags"><span>Python</span><span>InfluxDB</span><span>Grafana</span><span>Docker</span></div>
       </div>
-      <h3>Pulsar</h3>
-      <p>Lightweight server monitoring agent. Streams CPU, RAM, disk, and network metrics to a clean dashboard. No cloud dependency, no telemetry.</p>
-      <div class="project-tags"><span>Python</span><span>InfluxDB</span><span>Grafana</span><span>Docker</span></div>
     </div>
 
     <div class="project-card">
-      <div class="project-top">
-        <div class="project-icon">🤖</div>
-        <div class="project-links">
-          <a href="#">GitHub</a>
-          <a href="#">Live</a>
+      <img class="project-thumb" src="https://picsum.photos/seed/threadbot/600/300" alt="Threadbot" />
+      <div class="project-body">
+        <div class="project-top">
+          <div class="project-icon">🤖</div>
+          <div class="project-links"><a href="#">GitHub</a><a href="#">Live</a></div>
         </div>
+        <h3>Threadbot</h3>
+        <p>A Discord bot that summarises long forum threads using an LLM backend. Reduced meeting recaps in a 3k-member server by 80%.</p>
+        <div class="project-tags"><span>Python</span><span>Discord.py</span><span>LLM</span><span>PostgreSQL</span></div>
       </div>
-      <h3>Threadbot</h3>
-      <p>A Discord bot that summarises long forum threads using an LLM backend. Reduced meeting recaps in a 3k-member server by 80%.</p>
-      <div class="project-tags"><span>Python</span><span>Discord.py</span><span>LLM</span><span>PostgreSQL</span></div>
     </div>
 
     <div class="project-card">
-      <div class="project-top">
-        <div class="project-icon">🌐</div>
-        <div class="project-links">
-          <a href="#">GitHub</a>
-          <a href="#">Live</a>
+      <img class="project-thumb" src="https://picsum.photos/seed/proxgate/600/300" alt="Proxgate" />
+      <div class="project-body">
+        <div class="project-top">
+          <div class="project-icon">🌐</div>
+          <div class="project-links"><a href="#">GitHub</a><a href="#">Live</a></div>
         </div>
+        <h3>Proxgate</h3>
+        <p>A web UI for managing Proxmox LXC containers and VMs — spin up, snapshot, and SSH into machines straight from the browser.</p>
+        <div class="project-tags"><span>React</span><span>Node.js</span><span>Proxmox API</span><span>Cloudflare</span></div>
       </div>
-      <h3>Proxgate</h3>
-      <p>A web UI for managing Proxmox LXC containers and VMs — spin up, snapshot, and SSH into machines straight from the browser.</p>
-      <div class="project-tags"><span>React</span><span>Node.js</span><span>Proxmox API</span><span>Cloudflare</span></div>
     </div>
 
     <div class="project-card">
-      <div class="project-top">
-        <div class="project-icon">📦</div>
-        <div class="project-links">
-          <a href="#">GitHub</a>
-          <a href="#">Live</a>
+      <img class="project-thumb" src="https://picsum.photos/seed/cratelog/600/300" alt="Cratelog" />
+      <div class="project-body">
+        <div class="project-top">
+          <div class="project-icon">📦</div>
+          <div class="project-links"><a href="#">GitHub</a><a href="#">Live</a></div>
         </div>
+        <h3>Cratelog</h3>
+        <p>A personal package registry and changelog tracker. Pin versions, track breaking changes, and get notified before updates wreck your project.</p>
+        <div class="project-tags"><span>Go</span><span>PostgreSQL</span><span>React</span><span>Docker</span></div>
       </div>
-      <h3>Cratelog</h3>
-      <p>A personal package registry and changelog tracker. Pin versions, track breaking changes, and get notified before updates wreck your project.</p>
-      <div class="project-tags"><span>Go</span><span>PostgreSQL</span><span>React</span><span>Docker</span></div>
     </div>
 
   </div>
@@ -303,9 +302,7 @@
   </div>
 </section>
 
-<footer>
-  Designed &amp; built by Kai Voss &mdash; &copy; 2026
-</footer>
+<footer>Designed &amp; built by Kai Voss &mdash; &copy; 2026</footer>
 
 </body>
 </html>
