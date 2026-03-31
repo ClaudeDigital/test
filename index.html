@@ -1,8 +1,284 @@
 <!DOCTYPE html>
-<html>
-<head><title>Test</title></head>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #13131a;
+      --border: #1e1e2e;
+      --accent: #7c6aff;
+      --accent2: #ff6a8a;
+      --text: #e2e2f0;
+      --muted: #8888aa;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.2rem 6%;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .logo { font-weight: 700; font-size: 1.2rem; color: var(--accent); letter-spacing: 1px; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: .9rem; transition: color .2s; }
+    .nav-links a:hover { color: var(--text); }
+
+    /* HERO */
+    #hero {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 6rem 6% 4rem;
+      background: radial-gradient(ellipse at 50% 0%, rgba(124,106,255,.15) 0%, transparent 70%);
+    }
+    .hero-inner { max-width: 700px; }
+    .badge {
+      display: inline-block; margin-bottom: 1.5rem;
+      padding: .35rem 1rem; border-radius: 99px;
+      border: 1px solid var(--accent); color: var(--accent);
+      font-size: .8rem; letter-spacing: 1px; text-transform: uppercase;
+    }
+    h1 { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 800; line-height: 1.15; margin-bottom: 1.2rem; }
+    h1 span { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero-sub { font-size: 1.1rem; color: var(--muted); margin-bottom: 2.5rem; }
+    .cta-group { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      padding: .75rem 1.8rem; border-radius: 8px; font-size: .95rem;
+      cursor: pointer; text-decoration: none; font-weight: 600; transition: all .2s;
+    }
+    .btn-primary { background: var(--accent); color: #fff; border: none; }
+    .btn-primary:hover { filter: brightness(1.15); transform: translateY(-2px); }
+    .btn-outline { border: 1px solid var(--border); color: var(--text); background: transparent; }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+    /* SECTIONS */
+    section { padding: 5rem 6%; }
+    .section-label {
+      font-size: .8rem; text-transform: uppercase; letter-spacing: 2px;
+      color: var(--accent); margin-bottom: .5rem;
+    }
+    .section-title { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 700; margin-bottom: 3rem; }
+
+    /* ABOUT */
+    #about { border-top: 1px solid var(--border); }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; max-width: 1000px; }
+    .about-text p { color: var(--muted); margin-bottom: 1rem; }
+    .skills { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1.5rem; }
+    .skill-tag {
+      padding: .3rem .9rem; border-radius: 6px;
+      background: var(--surface); border: 1px solid var(--border);
+      font-size: .8rem; color: var(--muted);
+    }
+    .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.5rem; text-align: center;
+    }
+    .stat-num { font-size: 2.2rem; font-weight: 800; color: var(--accent); }
+    .stat-label { font-size: .85rem; color: var(--muted); margin-top: .25rem; }
+
+    /* PROJECTS */
+    #projects { border-top: 1px solid var(--border); background: var(--surface); }
+    .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+    .project-card {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1.8rem; transition: all .25s;
+      display: flex; flex-direction: column; gap: .8rem;
+    }
+    .project-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+    .project-top { display: flex; justify-content: space-between; align-items: flex-start; }
+    .project-icon { font-size: 1.8rem; }
+    .project-links { display: flex; gap: .5rem; }
+    .project-links a { color: var(--muted); font-size: .8rem; text-decoration: none; padding: .2rem .6rem; border: 1px solid var(--border); border-radius: 6px; transition: all .2s; }
+    .project-links a:hover { color: var(--accent); border-color: var(--accent); }
+    .project-card h3 { font-size: 1.1rem; font-weight: 700; }
+    .project-card p { font-size: .88rem; color: var(--muted); flex: 1; }
+    .project-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .5rem; }
+    .project-tags span {
+      font-size: .75rem; padding: .2rem .6rem;
+      background: rgba(124,106,255,.1); color: var(--accent);
+      border-radius: 5px;
+    }
+
+    /* CONTACT */
+    #contact { border-top: 1px solid var(--border); text-align: center; }
+    .contact-box {
+      max-width: 540px; margin: 0 auto;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 3rem;
+    }
+    .contact-box p { color: var(--muted); margin-bottom: 2rem; }
+    .contact-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+    .contact-link {
+      display: flex; align-items: center; gap: .5rem;
+      padding: .65rem 1.4rem; border-radius: 8px;
+      border: 1px solid var(--border); color: var(--text);
+      text-decoration: none; font-size: .9rem; transition: all .2s;
+    }
+    .contact-link:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* FOOTER */
+    footer {
+      text-align: center; padding: 2rem;
+      border-top: 1px solid var(--border); color: var(--muted); font-size: .85rem;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 700px) {
+      .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .nav-links { gap: 1rem; }
+    }
+  </style>
+</head>
 <body>
-  <h1>Test site is working</h1>
-  <p>Served from Proxmox container 104 (test)</p>
+
+<nav>
+  <div class="logo">YourName</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-inner">
+    <div class="badge">Available for work</div>
+    <h1>I build things for the <span>web</span></h1>
+    <p class="hero-sub">Full-stack developer crafting clean, performant, and user-friendly digital experiences.</p>
+    <div class="cta-group">
+      <a href="#projects" class="btn btn-primary">View Projects</a>
+      <a href="#contact" class="btn btn-outline">Get in touch</a>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label">About</div>
+  <div class="section-title">A little about me</div>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>Hi! I'm a developer with a passion for building scalable web applications and automating everything in between. I enjoy working across the stack — from designing clean UIs to architecting backend systems.</p>
+      <p>When I'm not coding, I'm exploring self-hosted infrastructure, experimenting with new tools, or contributing to open-source projects.</p>
+      <div class="skills">
+        <span class="skill-tag">JavaScript</span>
+        <span class="skill-tag">TypeScript</span>
+        <span class="skill-tag">React</span>
+        <span class="skill-tag">Node.js</span>
+        <span class="skill-tag">Python</span>
+        <span class="skill-tag">Docker</span>
+        <span class="skill-tag">Linux</span>
+        <span class="skill-tag">Cloudflare</span>
+        <span class="skill-tag">Proxmox</span>
+        <span class="skill-tag">Git</span>
+      </div>
+    </div>
+    <div class="about-stats">
+      <div class="stat-card"><div class="stat-num">3+</div><div class="stat-label">Years Experience</div></div>
+      <div class="stat-card"><div class="stat-num">20+</div><div class="stat-label">Projects Built</div></div>
+      <div class="stat-card"><div class="stat-num">10+</div><div class="stat-label">Happy Clients</div></div>
+      <div class="stat-card"><div class="stat-num">∞</div><div class="stat-label">Cups of Coffee</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-label">Work</div>
+  <div class="section-title">Featured Projects</div>
+  <div class="projects-grid">
+
+    <div class="project-card">
+      <div class="project-top">
+        <div class="project-icon">🚀</div>
+        <div class="project-links">
+          <a href="#">GitHub</a>
+          <a href="#">Live</a>
+        </div>
+      </div>
+      <h3>Project Alpha</h3>
+      <p>A full-stack web app with real-time collaboration features, built with React and WebSockets.</p>
+      <div class="project-tags"><span>React</span><span>Node.js</span><span>WebSocket</span></div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-top">
+        <div class="project-icon">📦</div>
+        <div class="project-links">
+          <a href="#">GitHub</a>
+          <a href="#">Live</a>
+        </div>
+      </div>
+      <h3>Self-Hosted Dashboard</h3>
+      <p>A Proxmox + Docker management dashboard for monitoring home lab infrastructure.</p>
+      <div class="project-tags"><span>Python</span><span>Docker</span><span>Proxmox</span></div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-top">
+        <div class="project-icon">⚡</div>
+        <div class="project-links">
+          <a href="#">GitHub</a>
+          <a href="#">Live</a>
+        </div>
+      </div>
+      <h3>CLI Automation Toolkit</h3>
+      <p>A collection of shell and Python scripts for automating repetitive DevOps workflows.</p>
+      <div class="project-tags"><span>Python</span><span>Bash</span><span>Cloudflare</span></div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-top">
+        <div class="project-icon">🎨</div>
+        <div class="project-links">
+          <a href="#">GitHub</a>
+          <a href="#">Live</a>
+        </div>
+      </div>
+      <h3>Portfolio v2</h3>
+      <p>This very portfolio — a static site served via Cloudflare Tunnel on a self-hosted Proxmox LXC.</p>
+      <div class="project-tags"><span>HTML</span><span>CSS</span><span>Cloudflare</span></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label">Contact</div>
+  <div class="section-title">Let's work together</div>
+  <div class="contact-box">
+    <p>I'm open to freelance projects, full-time roles, and interesting collaborations. Drop me a message!</p>
+    <div class="contact-links">
+      <a href="mailto:you@example.com" class="contact-link">✉️ Email</a>
+      <a href="https://github.com/ClaudeDigital" class="contact-link">🐙 GitHub</a>
+      <a href="#" class="contact-link">💼 LinkedIn</a>
+      <a href="#" class="contact-link">🐦 Twitter</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Built with ❤️ and self-hosted infrastructure &mdash; &copy; 2026
+</footer>
+
 </body>
 </html>
