@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Portfolio</title>
+  <title>Kai Voss — Developer</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -149,7 +149,7 @@
 <body>
 
 <nav>
-  <div class="logo">YourName</div>
+  <div class="logo">kai.voss</div>
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#projects">Projects</a></li>
@@ -160,12 +160,12 @@
 <!-- HERO -->
 <section id="hero">
   <div class="hero-inner">
-    <div class="badge">Available for work</div>
-    <h1>I build things for the <span>web</span></h1>
-    <p class="hero-sub">Full-stack developer crafting clean, performant, and user-friendly digital experiences.</p>
+    <div class="badge">Open to opportunities</div>
+    <h1>Hi, I'm <span>Kai Voss</span></h1>
+    <p class="hero-sub">Backend-leaning full-stack developer. I obsess over clean architecture, fast infrastructure, and things that just work.</p>
     <div class="cta-group">
-      <a href="#projects" class="btn btn-primary">View Projects</a>
-      <a href="#contact" class="btn btn-outline">Get in touch</a>
+      <a href="#projects" class="btn btn-primary">See my work</a>
+      <a href="#contact" class="btn btn-outline">Say hello</a>
     </div>
   </div>
 </section>
@@ -173,29 +173,31 @@
 <!-- ABOUT -->
 <section id="about">
   <div class="section-label">About</div>
-  <div class="section-title">A little about me</div>
+  <div class="section-title">Who's behind the terminal</div>
   <div class="about-grid">
     <div class="about-text">
-      <p>Hi! I'm a developer with a passion for building scalable web applications and automating everything in between. I enjoy working across the stack — from designing clean UIs to architecting backend systems.</p>
-      <p>When I'm not coding, I'm exploring self-hosted infrastructure, experimenting with new tools, or contributing to open-source projects.</p>
+      <p>I'm Kai — a self-taught developer who fell in love with programming at 14 by breaking things on a secondhand laptop. Seven years later, I'm still breaking things, just on purpose now.</p>
+      <p>I spend most of my time building APIs, designing systems that scale, and tinkering with self-hosted infrastructure. I believe great software is invisible — it just works, and works fast.</p>
       <div class="skills">
-        <span class="skill-tag">JavaScript</span>
         <span class="skill-tag">TypeScript</span>
-        <span class="skill-tag">React</span>
-        <span class="skill-tag">Node.js</span>
         <span class="skill-tag">Python</span>
+        <span class="skill-tag">Go</span>
+        <span class="skill-tag">React</span>
+        <span class="skill-tag">PostgreSQL</span>
+        <span class="skill-tag">Redis</span>
         <span class="skill-tag">Docker</span>
         <span class="skill-tag">Linux</span>
         <span class="skill-tag">Cloudflare</span>
         <span class="skill-tag">Proxmox</span>
+        <span class="skill-tag">Nginx</span>
         <span class="skill-tag">Git</span>
       </div>
     </div>
     <div class="about-stats">
-      <div class="stat-card"><div class="stat-num">3+</div><div class="stat-label">Years Experience</div></div>
-      <div class="stat-card"><div class="stat-num">20+</div><div class="stat-label">Projects Built</div></div>
-      <div class="stat-card"><div class="stat-num">10+</div><div class="stat-label">Happy Clients</div></div>
-      <div class="stat-card"><div class="stat-num">∞</div><div class="stat-label">Cups of Coffee</div></div>
+      <div class="stat-card"><div class="stat-num">7+</div><div class="stat-label">Years Coding</div></div>
+      <div class="stat-card"><div class="stat-num">34</div><div class="stat-label">Projects Shipped</div></div>
+      <div class="stat-card"><div class="stat-num">12</div><div class="stat-label">Happy Clients</div></div>
+      <div class="stat-card"><div class="stat-num">∞</div><div class="stat-label">Tabs Open</div></div>
     </div>
   </div>
 </section>
@@ -203,20 +205,72 @@
 <!-- PROJECTS -->
 <section id="projects">
   <div class="section-label">Work</div>
-  <div class="section-title">Featured Projects</div>
+  <div class="section-title">Things I've built</div>
   <div class="projects-grid">
 
     <div class="project-card">
       <div class="project-top">
-        <div class="project-icon">🚀</div>
+        <div class="project-icon">🛰️</div>
         <div class="project-links">
           <a href="#">GitHub</a>
           <a href="#">Live</a>
         </div>
       </div>
-      <h3>Project Alpha</h3>
-      <p>A full-stack web app with real-time collaboration features, built with React and WebSockets.</p>
-      <div class="project-tags"><span>React</span><span>Node.js</span><span>WebSocket</span></div>
+      <h3>Orbitly</h3>
+      <p>A real-time flight tracking dashboard pulling live ADS-B data. Renders 10k+ aircraft positions on a WebGL map without breaking a sweat.</p>
+      <div class="project-tags"><span>Go</span><span>WebGL</span><span>WebSocket</span><span>Redis</span></div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-top">
+        <div class="project-icon">🔐</div>
+        <div class="project-links">
+          <a href="#">GitHub</a>
+          <a href="#">Live</a>
+        </div>
+      </div>
+      <h3>Vaultkey</h3>
+      <p>A self-hosted password manager with end-to-end encryption, browser extension, and zero-knowledge architecture. Because cloud vaults aren't yours.</p>
+      <div class="project-tags"><span>TypeScript</span><span>React</span><span>AES-256</span><span>SQLite</span></div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-top">
+        <div class="project-icon">📊</div>
+        <div class="project-links">
+          <a href="#">GitHub</a>
+          <a href="#">Live</a>
+        </div>
+      </div>
+      <h3>Pulsar</h3>
+      <p>Lightweight server monitoring agent. Streams CPU, RAM, disk, and network metrics to a clean dashboard. No cloud dependency, no telemetry.</p>
+      <div class="project-tags"><span>Python</span><span>InfluxDB</span><span>Grafana</span><span>Docker</span></div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-top">
+        <div class="project-icon">🤖</div>
+        <div class="project-links">
+          <a href="#">GitHub</a>
+          <a href="#">Live</a>
+        </div>
+      </div>
+      <h3>Threadbot</h3>
+      <p>A Discord bot that summarises long forum threads using an LLM backend. Reduced meeting recaps in a 3k-member server by 80%.</p>
+      <div class="project-tags"><span>Python</span><span>Discord.py</span><span>LLM</span><span>PostgreSQL</span></div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-top">
+        <div class="project-icon">🌐</div>
+        <div class="project-links">
+          <a href="#">GitHub</a>
+          <a href="#">Live</a>
+        </div>
+      </div>
+      <h3>Proxgate</h3>
+      <p>A web UI for managing Proxmox LXC containers and VMs — spin up, snapshot, and SSH into machines straight from the browser.</p>
+      <div class="project-tags"><span>React</span><span>Node.js</span><span>Proxmox API</span><span>Cloudflare</span></div>
     </div>
 
     <div class="project-card">
@@ -227,35 +281,9 @@
           <a href="#">Live</a>
         </div>
       </div>
-      <h3>Self-Hosted Dashboard</h3>
-      <p>A Proxmox + Docker management dashboard for monitoring home lab infrastructure.</p>
-      <div class="project-tags"><span>Python</span><span>Docker</span><span>Proxmox</span></div>
-    </div>
-
-    <div class="project-card">
-      <div class="project-top">
-        <div class="project-icon">⚡</div>
-        <div class="project-links">
-          <a href="#">GitHub</a>
-          <a href="#">Live</a>
-        </div>
-      </div>
-      <h3>CLI Automation Toolkit</h3>
-      <p>A collection of shell and Python scripts for automating repetitive DevOps workflows.</p>
-      <div class="project-tags"><span>Python</span><span>Bash</span><span>Cloudflare</span></div>
-    </div>
-
-    <div class="project-card">
-      <div class="project-top">
-        <div class="project-icon">🎨</div>
-        <div class="project-links">
-          <a href="#">GitHub</a>
-          <a href="#">Live</a>
-        </div>
-      </div>
-      <h3>Portfolio v2</h3>
-      <p>This very portfolio — a static site served via Cloudflare Tunnel on a self-hosted Proxmox LXC.</p>
-      <div class="project-tags"><span>HTML</span><span>CSS</span><span>Cloudflare</span></div>
+      <h3>Cratelog</h3>
+      <p>A personal package registry and changelog tracker. Pin versions, track breaking changes, and get notified before updates wreck your project.</p>
+      <div class="project-tags"><span>Go</span><span>PostgreSQL</span><span>React</span><span>Docker</span></div>
     </div>
 
   </div>
@@ -264,20 +292,19 @@
 <!-- CONTACT -->
 <section id="contact">
   <div class="section-label">Contact</div>
-  <div class="section-title">Let's work together</div>
+  <div class="section-title">Let's build something</div>
   <div class="contact-box">
-    <p>I'm open to freelance projects, full-time roles, and interesting collaborations. Drop me a message!</p>
+    <p>I'm available for freelance work, interesting side projects, and full-time roles. I reply within 24 hours — usually much sooner.</p>
     <div class="contact-links">
-      <a href="mailto:you@example.com" class="contact-link">✉️ Email</a>
-      <a href="https://github.com/ClaudeDigital" class="contact-link">🐙 GitHub</a>
+      <a href="mailto:kai@voss.dev" class="contact-link">✉️ kai@voss.dev</a>
+      <a href="#" class="contact-link">🐙 GitHub</a>
       <a href="#" class="contact-link">💼 LinkedIn</a>
-      <a href="#" class="contact-link">🐦 Twitter</a>
     </div>
   </div>
 </section>
 
 <footer>
-  Built with ❤️ and self-hosted infrastructure &mdash; &copy; 2026
+  Designed &amp; built by Kai Voss &mdash; &copy; 2026
 </footer>
 
 </body>
