@@ -10,8 +10,8 @@
       --bg: #0a0a0f;
       --surface: #13131a;
       --border: #1e1e2e;
-      --accent: #7c6aff;
-      --accent2: #ff6a8a;
+      --accent: #f97316;
+      --accent2: #f5c018;
       --text: #e2e2f0;
       --muted: #8888aa;
     }
@@ -36,8 +36,8 @@
       min-height: 100vh;
       display: flex; align-items: center; justify-content: center;
       padding: 6rem 6% 4rem;
-      background: radial-gradient(ellipse at 60% 0%, rgba(124,106,255,.18) 0%, transparent 65%),
-                  radial-gradient(ellipse at 20% 80%, rgba(255,106,138,.1) 0%, transparent 60%);
+      background: radial-gradient(ellipse at 60% 0%, rgba(249,115,22,.18) 0%, transparent 65%),
+                  radial-gradient(ellipse at 20% 80%, rgba(245,192,24,.1) 0%, transparent 60%);
     }
     .hero-inner {
       display: grid; grid-template-columns: 1fr auto; gap: 4rem;
@@ -104,7 +104,7 @@
       border-radius: 14px; overflow: hidden; transition: all .25s;
       display: flex; flex-direction: column;
     }
-    .project-card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 20px 40px rgba(124,106,255,.1); }
+    .project-card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 20px 40px rgba(249,115,22,.1); }
     .project-thumb { width: 100%; height: 180px; object-fit: cover; display: block; }
     .project-body { padding: 1.4rem; display: flex; flex-direction: column; gap: .7rem; flex: 1; }
     .project-top { display: flex; justify-content: space-between; align-items: center; }
@@ -115,7 +115,7 @@
     .project-card h3 { font-size: 1.05rem; font-weight: 700; }
     .project-card p { font-size: .86rem; color: var(--muted); flex: 1; }
     .project-tags { display: flex; flex-wrap: wrap; gap: .4rem; }
-    .project-tags span { font-size: .73rem; padding: .2rem .6rem; background: rgba(124,106,255,.1); color: var(--accent); border-radius: 5px; }
+    .project-tags span { font-size: .73rem; padding: .2rem .6rem; background: rgba(249,115,22,.1); color: var(--accent); border-radius: 5px; }
 
     /* CONTACT */
     #contact { border-top: 1px solid var(--border); text-align: center; }
@@ -135,6 +135,91 @@
       .avatar-ring { width: 200px; height: 200px; }
       .about-grid { grid-template-columns: 1fr; gap: 2rem; }
     }
+
+    /* SKILLS */
+    #skills { border-top: 1px solid var(--border); }
+    .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem 4rem; max-width: 900px; }
+    .skill-row { display: flex; flex-direction: column; gap: .5rem; }
+    .skill-header { display: flex; justify-content: space-between; align-items: center; }
+    .skill-name { font-size: .92rem; font-weight: 600; color: var(--text); }
+    .skill-pct { font-size: .82rem; font-weight: 700; color: var(--accent); opacity: 0; transition: opacity .4s; }
+    .skill-pct.visible { opacity: 1; }
+    .skill-track {
+      height: 6px; background: var(--border); border-radius: 99px; overflow: hidden;
+    }
+    .skill-bar {
+      height: 100%; border-radius: 99px; width: 0;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transition: width .9s cubic-bezier(.4,0,.2,1);
+      box-shadow: 0 0 10px rgba(249,115,22,.5);
+    }
+    @media (max-width: 700px) { .skills-grid { grid-template-columns: 1fr; } }
+
+    /* CONTACT EXPANDED */
+    #contact { border-top: 1px solid var(--border); }
+    .contact-layout { display: grid; grid-template-columns: 1fr 1.4fr; gap: 4rem; max-width: 1000px; align-items: start; }
+    .contact-intro { color: var(--muted); margin-bottom: 2rem; line-height: 1.7; }
+    .contact-detail { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.4rem; }
+    .contact-detail-icon { font-size: 1.2rem; margin-top: .1rem; }
+    .contact-detail-label { font-size: .75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: .15rem; }
+    .contact-detail-value { font-size: .92rem; color: var(--text); }
+    .contact-detail-value a { color: var(--accent); text-decoration: none; }
+    .contact-socials { display: flex; gap: .8rem; flex-wrap: wrap; margin-top: 2rem; }
+    .contact-link { display: flex; align-items: center; gap: .5rem; padding: .55rem 1.1rem; border-radius: 8px; border: 1px solid var(--border); color: var(--text); text-decoration: none; font-size: .85rem; transition: all .2s; }
+    .contact-link:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* FORM */
+    .contact-form { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 2.2rem; display: flex; flex-direction: column; gap: 1.2rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+    .form-group { display: flex; flex-direction: column; gap: .4rem; }
+    .form-group label { font-size: .8rem; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+      color: var(--text); font-size: .92rem; padding: .7rem 1rem;
+      font-family: inherit; outline: none; transition: border-color .2s, box-shadow .2s;
+      resize: vertical;
+    }
+    .form-group select { appearance: none; cursor: pointer; }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(249,115,22,.15);
+    }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: #44445a; }
+    .form-submit { width: 100%; justify-content: center; font-size: 1rem; padding: .9rem; border-radius: 10px; }
+    .form-success { display: none; text-align: center; color: var(--accent); font-weight: 600; font-size: .92rem; padding: .5rem; }
+    .form-success.show { display: block; }
+
+    @media (max-width: 800px) {
+      .contact-layout { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+
+    /* AUTOMATIONS */
+    #automations { border-top: 1px solid var(--border); }
+    .automations-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5rem; }
+    .auto-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1.6rem;
+      display: flex; flex-direction: column; gap: .9rem;
+      transition: all .25s;
+    }
+    .auto-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 16px 40px rgba(249,115,22,.1); }
+    .auto-card.done { border-left: 3px solid #4ade80; }
+    .auto-header { display: flex; justify-content: space-between; align-items: center; }
+    .auto-icon { font-size: 1.8rem; }
+    .auto-status { font-size: .75rem; font-weight: 700; padding: .25rem .75rem; border-radius: 99px; background: rgba(74,222,128,.12); color: #4ade80; border: 1px solid rgba(74,222,128,.3); letter-spacing: .5px; }
+    .auto-card h3 { font-size: 1.05rem; font-weight: 700; margin: 0; }
+    .auto-card p { font-size: .86rem; color: var(--muted); line-height: 1.65; }
+    .auto-card code { background: rgba(249,115,22,.12); color: var(--accent); padding: .1rem .4rem; border-radius: 4px; font-size: .82rem; }
+    .auto-meta { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .5rem; }
+    .auto-meta-row { display: flex; gap: .8rem; font-size: .8rem; }
+    .auto-meta-label { color: var(--muted); min-width: 64px; }
+    .auto-meta-row span:last-child { color: var(--text); }
   </style>
 </head>
 <body>
@@ -144,7 +229,7 @@
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#projects">Projects</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="#automations">Automations</a></li><li><a href="#contact">Contact</a></li>
   </ul>
 </nav>
 
@@ -197,6 +282,47 @@
       <div class="stat-card"><div class="stat-num">34</div><div class="stat-label">Projects Shipped</div></div>
       <div class="stat-card"><div class="stat-num">12</div><div class="stat-label">Happy Clients</div></div>
       <div class="stat-card"><div class="stat-num">∞</div><div class="stat-label">Tabs Open</div></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- SKILLS -->
+<section id=skills>
+  <div class=section-label>Expertise</div>
+  <div class=section-title>Languages &amp; tools</div>
+  <div class=skills-grid>
+    <div class=skill-row>
+      <div class=skill-header><span class=skill-name>JavaScript</span><span class=skill-pct>90%</span></div>
+      <div class=skill-track><div class=skill-bar data-pct=90></div></div>
+    </div>
+    <div class=skill-row>
+      <div class=skill-header><span class=skill-name>TypeScript</span><span class=skill-pct>85%</span></div>
+      <div class=skill-track><div class=skill-bar data-pct=85></div></div>
+    </div>
+    <div class=skill-row>
+      <div class=skill-header><span class=skill-name>React</span><span class=skill-pct>80%</span></div>
+      <div class=skill-track><div class=skill-bar data-pct=80></div></div>
+    </div>
+    <div class=skill-row>
+      <div class=skill-header><span class=skill-name>Python</span><span class=skill-pct>75%</span></div>
+      <div class=skill-track><div class=skill-bar data-pct=75></div></div>
+    </div>
+    <div class=skill-row>
+      <div class=skill-header><span class=skill-name>Go</span><span class=skill-pct>70%</span></div>
+      <div class=skill-track><div class=skill-bar data-pct=70></div></div>
+    </div>
+    <div class=skill-row>
+      <div class=skill-header><span class=skill-name>PostgreSQL</span><span class=skill-pct>65%</span></div>
+      <div class=skill-track><div class=skill-bar data-pct=65></div></div>
+    </div>
+    <div class=skill-row>
+      <div class=skill-header><span class=skill-name>Docker</span><span class=skill-pct>85%</span></div>
+      <div class=skill-track><div class=skill-bar data-pct=85></div></div>
+    </div>
+    <div class=skill-row>
+      <div class=skill-header><span class=skill-name>Linux</span><span class=skill-pct>90%</span></div>
+      <div class=skill-track><div class=skill-bar data-pct=90></div></div>
     </div>
   </div>
 </section>
@@ -288,21 +414,187 @@
   </div>
 </section>
 
+
+<!-- AUTOMATIONS -->
+<section id="automations">
+  <div class="section-label">Automation</div>
+  <div class="section-title">n8n workflows live in production</div>
+  <div class="automations-grid">
+
+    <div class="auto-card done">
+      <div class="auto-header">
+        <div class="auto-icon">🌤️</div>
+        <span class="auto-status">✅ Live</span>
+      </div>
+      <h3>Weather Bot — Prishtina</h3>
+      <p>Fetches real-time weather from Open-Meteo every 30 minutes and pushes a formatted Telegram message with temperature, humidity, wind speed and precipitation.</p>
+      <div class="auto-meta">
+        <div class="auto-meta-row"><span class="auto-meta-label">Trigger</span><span>Every 30 min</span></div>
+        <div class="auto-meta-row"><span class="auto-meta-label">API</span><span>Open-Meteo (free, no key)</span></div>
+        <div class="auto-meta-row"><span class="auto-meta-label">Output</span><span>Telegram message</span></div>
+      </div>
+      <div class="project-tags" style="margin-top:.8rem"><span>n8n</span><span>Telegram</span><span>Open-Meteo</span><span>Schedule</span></div>
+    </div>
+
+    <div class="auto-card done">
+      <div class="auto-header">
+        <div class="auto-icon">💬</div>
+        <span class="auto-status">✅ Live</span>
+      </div>
+      <h3>Hourly Quotes Bot</h3>
+      <p>Pulls a random motivational quote from ZenQuotes every hour and delivers it to Telegram with the local time stamp. Also triggered on-demand via the <code>/quote</code> command.</p>
+      <div class="auto-meta">
+        <div class="auto-meta-row"><span class="auto-meta-label">Trigger</span><span>Every 1 hour + /quote</span></div>
+        <div class="auto-meta-row"><span class="auto-meta-label">API</span><span>ZenQuotes (free, no key)</span></div>
+        <div class="auto-meta-row"><span class="auto-meta-label">Output</span><span>Telegram message</span></div>
+      </div>
+      <div class="project-tags" style="margin-top:.8rem"><span>n8n</span><span>Telegram</span><span>ZenQuotes</span><span>Webhook</span></div>
+    </div>
+
+    <div class="auto-card done">
+      <div class="auto-header">
+        <div class="auto-icon">🤖</div>
+        <span class="auto-status">✅ Live</span>
+      </div>
+      <h3>Claude Pro Renewal Reminder</h3>
+      <p>Every day at 20:00 sends a progressively funnier Telegram reminder counting down to the monthly Claude Pro subscription renewal on the 28th. Severity escalates as the date approaches — full panic mode on day zero.</p>
+      <div class="auto-meta">
+        <div class="auto-meta-row"><span class="auto-meta-label">Trigger</span><span>Daily 20:00 + /proplansub</span></div>
+        <div class="auto-meta-row"><span class="auto-meta-label">Logic</span><span>Dynamic tone (calm → MAYDAY)</span></div>
+        <div class="auto-meta-row"><span class="auto-meta-label">Output</span><span>Telegram message</span></div>
+      </div>
+      <div class="project-tags" style="margin-top:.8rem"><span>n8n</span><span>Telegram</span><span>Cron</span><span>JavaScript</span></div>
+    </div>
+
+    <div class="auto-card done">
+      <div class="auto-header">
+        <div class="auto-icon">🖥️</div>
+        <span class="auto-status">✅ Live</span>
+      </div>
+      <h3>Proxmox Status Bot</h3>
+      <p>Telegram bot that responds to <code>/proxmox</code> with a live report of every LXC container — status (running / stopped), current IP fetched in real time from the Proxmox API, and the public subdomain pulled from Cloudflare DNS.</p>
+      <div class="auto-meta">
+        <div class="auto-meta-row"><span class="auto-meta-label">Trigger</span><span>/proxmox command</span></div>
+        <div class="auto-meta-row"><span class="auto-meta-label">APIs</span><span>Proxmox API + Cloudflare API</span></div>
+        <div class="auto-meta-row"><span class="auto-meta-label">Output</span><span>Live Telegram report</span></div>
+      </div>
+      <div class="project-tags" style="margin-top:.8rem"><span>n8n</span><span>Proxmox</span><span>Cloudflare</span><span>Telegram</span></div>
+    </div>
+
+  </div>
+</section>
+
 <!-- CONTACT -->
 <section id="contact">
   <div class="section-label">Contact</div>
   <div class="section-title">Let's build something</div>
-  <div class="contact-box">
-    <p>I'm available for freelance work, interesting side projects, and full-time roles. I reply within 24 hours — usually much sooner.</p>
-    <div class="contact-links">
-      <a href="mailto:kai@voss.dev" class="contact-link">✉️ kai@voss.dev</a>
-      <a href="#" class="contact-link">🐙 GitHub</a>
-      <a href="#" class="contact-link">💼 LinkedIn</a>
+  <div class="contact-layout">
+    <div class="contact-info">
+      <p class="contact-intro">Got a project in mind, a role to fill, or just want to geek out about infrastructure? I'm all ears.</p>
+      <div class="contact-detail">
+        <span class="contact-detail-icon">✉️</span>
+        <div>
+          <div class="contact-detail-label">Email</div>
+          <a href="mailto:kai@voss.dev" class="contact-detail-value">kai@voss.dev</a>
+        </div>
+      </div>
+      <div class="contact-detail">
+        <span class="contact-detail-icon">⏱️</span>
+        <div>
+          <div class="contact-detail-label">Response time</div>
+          <div class="contact-detail-value">Within 24 hours</div>
+        </div>
+      </div>
+      <div class="contact-detail">
+        <span class="contact-detail-icon">🌍</span>
+        <div>
+          <div class="contact-detail-label">Timezone</div>
+          <div class="contact-detail-value">CET (UTC+1) — flexible</div>
+        </div>
+      </div>
+      <div class="contact-detail">
+        <span class="contact-detail-icon">💼</span>
+        <div>
+          <div class="contact-detail-label">Open to</div>
+          <div class="contact-detail-value">Freelance · Full-time · Consulting</div>
+        </div>
+      </div>
+      <div class="contact-socials">
+        <a href="#" class="contact-link">🐙 GitHub</a>
+        <a href="#" class="contact-link">💼 LinkedIn</a>
+        <a href="#" class="contact-link">🐦 Twitter</a>
+      </div>
     </div>
+    <form class="contact-form" onsubmit="handleSubmit(event)">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="fname">Your name</label>
+          <input type="text" id="fname" placeholder="Jane Smith" required />
+        </div>
+        <div class="form-group">
+          <label for="femail">Email address</label>
+          <input type="email" id="femail" placeholder="jane@company.com" required />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="fsubject">What's this about?</label>
+        <select id="fsubject">
+          <option value="">Select a topic…</option>
+          <option>Freelance / Contract work</option>
+          <option>Full-time opportunity</option>
+          <option>Open source collaboration</option>
+          <option>Technical consulting</option>
+          <option>Just saying hi</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="fbudget">Budget range (optional)</label>
+        <select id="fbudget">
+          <option value="">Prefer not to say</option>
+          <option>Under $1k</option>
+          <option>$1k – $5k</option>
+          <option>$5k – $15k</option>
+          <option>$15k – $50k</option>
+          <option>$50k+</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="fmessage">Message</label>
+        <textarea id="fmessage" rows="5" placeholder="Tell me about your project, timeline, and what you're looking for…" required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary form-submit">Send message →</button>
+      <div class="form-success" id="formSuccess">Message sent! I'll be in touch soon. 🔥</div>
+    </form>
   </div>
 </section>
 
 <footer>Designed &amp; built by Kai Voss &mdash; &copy; 2026</footer>
 
+
+<script>
+  const bars = document.querySelectorAll('.skill-bar');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const bar = entry.target;
+        const pct = bar.dataset.pct;
+        bar.style.width = pct + '%';
+        const label = bar.closest('.skill-row').querySelector('.skill-pct');
+        if (label) label.classList.add('visible');
+        observer.unobserve(bar);
+      }
+    });
+  }, { threshold: 0.3 });
+  bars.forEach(b => observer.observe(b));
+</script>
+
+<script>
+  function handleSubmit(e) {
+    e.preventDefault();
+    document.getElementById('formSuccess').classList.add('show');
+    e.target.querySelector('.form-submit').disabled = true;
+    e.target.querySelector('.form-submit').textContent = 'Sent!';
+  }
+</script>
 </body>
 </html>
