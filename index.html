@@ -220,6 +220,17 @@
     .auto-meta-row { display: flex; gap: .8rem; font-size: .8rem; }
     .auto-meta-label { color: var(--muted); min-width: 64px; }
     .auto-meta-row span:last-child { color: var(--text); }
+
+    /* LIVE STATS BAR */
+    .auto-live-stats {
+      display: flex; gap: .8rem; flex-wrap: wrap;
+      background: rgba(249,115,22,.06); border: 1px solid rgba(249,115,22,.2);
+      border-radius: 10px; padding: .8rem 1rem;
+    }
+    .live-stat { display: flex; flex-direction: column; align-items: center; min-width: 52px; }
+    .live-stat-val { font-size: 1.25rem; font-weight: 800; color: var(--accent); line-height: 1.1; }
+    .live-stat-lbl { font-size: .68rem; color: var(--muted); text-align: center; margin-top: .1rem; }
+    .stats-loading { opacity: .5; }
   </style>
 </head>
 <body>
@@ -421,58 +432,77 @@
   <div class="section-title">n8n workflows live in production</div>
   <div class="automations-grid">
 
-    <div class="auto-card done">
+    <div class="auto-card done" id="ac-weather">
       <div class="auto-header">
-        <div class="auto-icon">🌤️</div>
+        <div class="auto-icon" id="ac-weather-emoji">🌤️</div>
         <span class="auto-status">✅ Live</span>
       </div>
       <h3>Weather Bot — Prishtina</h3>
       <p>Fetches real-time weather from Open-Meteo every 30 minutes and pushes a formatted Telegram message with temperature, humidity, wind speed and precipitation.</p>
+      <div class="auto-live-stats" id="ac-weather-stats">
+        <div class="live-stat"><span class="live-stat-val" id="ls-temp">—</span><span class="live-stat-lbl">°C now</span></div>
+        <div class="live-stat"><span class="live-stat-val" id="ls-humidity">—</span><span class="live-stat-lbl">% humidity</span></div>
+        <div class="live-stat"><span class="live-stat-val" id="ls-wind">—</span><span class="live-stat-lbl">km/h wind</span></div>
+        <div class="live-stat"><span class="live-stat-val">48</span><span class="live-stat-lbl">msg/day</span></div>
+      </div>
       <div class="auto-meta">
         <div class="auto-meta-row"><span class="auto-meta-label">Trigger</span><span>Every 30 min</span></div>
+        <div class="auto-meta-row"><span class="auto-meta-label">Condition</span><span id="ls-condition">Loading…</span></div>
         <div class="auto-meta-row"><span class="auto-meta-label">API</span><span>Open-Meteo (free, no key)</span></div>
-        <div class="auto-meta-row"><span class="auto-meta-label">Output</span><span>Telegram message</span></div>
       </div>
       <div class="project-tags" style="margin-top:.8rem"><span>n8n</span><span>Telegram</span><span>Open-Meteo</span><span>Schedule</span></div>
     </div>
 
-    <div class="auto-card done">
+    <div class="auto-card done" id="ac-quote">
       <div class="auto-header">
         <div class="auto-icon">💬</div>
         <span class="auto-status">✅ Live</span>
       </div>
       <h3>Hourly Quotes Bot</h3>
       <p>Pulls a random motivational quote from ZenQuotes every hour and delivers it to Telegram with the local time stamp. Also triggered on-demand via the <code>/quote</code> command.</p>
+      <div class="auto-live-stats">
+        <div class="live-stat"><span class="live-stat-val">24</span><span class="live-stat-lbl">msg/day</span></div>
+        <div class="live-stat"><span class="live-stat-val" id="ls-qauthor">—</span><span class="live-stat-lbl">today's author</span></div>
+      </div>
       <div class="auto-meta">
-        <div class="auto-meta-row"><span class="auto-meta-label">Trigger</span><span>Every 1 hour + /quote</span></div>
-        <div class="auto-meta-row"><span class="auto-meta-label">API</span><span>ZenQuotes (free, no key)</span></div>
-        <div class="auto-meta-row"><span class="auto-meta-label">Output</span><span>Telegram message</span></div>
+        <div class="auto-meta-row"><span class="auto-meta-label">Today's quote</span></div>
+        <div class="auto-meta-row" style="font-style:italic;color:var(--text)" id="ls-qtext">"Loading quote…"</div>
       </div>
       <div class="project-tags" style="margin-top:.8rem"><span>n8n</span><span>Telegram</span><span>ZenQuotes</span><span>Webhook</span></div>
     </div>
 
-    <div class="auto-card done">
+    <div class="auto-card done" id="ac-claude">
       <div class="auto-header">
         <div class="auto-icon">🤖</div>
         <span class="auto-status">✅ Live</span>
       </div>
       <h3>Claude Pro Renewal Reminder</h3>
       <p>Every day at 20:00 sends a progressively funnier Telegram reminder counting down to the monthly Claude Pro subscription renewal on the 28th. Severity escalates as the date approaches — full panic mode on day zero.</p>
+      <div class="auto-live-stats">
+        <div class="live-stat"><span class="live-stat-val" id="ls-days">—</span><span class="live-stat-lbl">days left</span></div>
+        <div class="live-stat"><span class="live-stat-val" id="ls-hours">—</span><span class="live-stat-lbl">hours left</span></div>
+        <div class="live-stat"><span class="live-stat-val">1</span><span class="live-stat-lbl">reminder/day</span></div>
+      </div>
       <div class="auto-meta">
         <div class="auto-meta-row"><span class="auto-meta-label">Trigger</span><span>Daily 20:00 + /proplansub</span></div>
+        <div class="auto-meta-row"><span class="auto-meta-label">Next renewal</span><span id="ls-renewal">Loading…</span></div>
         <div class="auto-meta-row"><span class="auto-meta-label">Logic</span><span>Dynamic tone (calm → MAYDAY)</span></div>
-        <div class="auto-meta-row"><span class="auto-meta-label">Output</span><span>Telegram message</span></div>
       </div>
       <div class="project-tags" style="margin-top:.8rem"><span>n8n</span><span>Telegram</span><span>Cron</span><span>JavaScript</span></div>
     </div>
 
-    <div class="auto-card done">
+    <div class="auto-card done" id="ac-prox">
       <div class="auto-header">
         <div class="auto-icon">🖥️</div>
         <span class="auto-status">✅ Live</span>
       </div>
       <h3>Proxmox Status Bot</h3>
       <p>Telegram bot that responds to <code>/proxmox</code> with a live report of every LXC container — status (running / stopped), current IP fetched in real time from the Proxmox API, and the public subdomain pulled from Cloudflare DNS.</p>
+      <div class="auto-live-stats">
+        <div class="live-stat"><span class="live-stat-val" id="ls-total">—</span><span class="live-stat-lbl">containers</span></div>
+        <div class="live-stat"><span class="live-stat-val" id="ls-running">—</span><span class="live-stat-lbl">running 🟢</span></div>
+        <div class="live-stat"><span class="live-stat-val" id="ls-stopped">—</span><span class="live-stat-lbl">stopped 🔴</span></div>
+      </div>
       <div class="auto-meta">
         <div class="auto-meta-row"><span class="auto-meta-label">Trigger</span><span>/proxmox command</span></div>
         <div class="auto-meta-row"><span class="auto-meta-label">APIs</span><span>Proxmox API + Cloudflare API</span></div>
@@ -596,5 +626,51 @@
     e.target.querySelector('.form-submit').textContent = 'Sent!';
   }
 </script>
+
+<script>
+(async function loadLiveStats() {
+  try {
+    const res = await fetch('https://n8n.gezimm.com/webhook/stats');
+    if (!res.ok) return;
+    const d = await res.json();
+
+    // Weather
+    if (d.weather) {
+      const set = (id, v) => { const el = document.getElementById(id); if(el) el.textContent = v; };
+      set('ac-weather-emoji', d.weather.emoji);
+      set('ls-temp', d.weather.temp);
+      set('ls-humidity', d.weather.humidity);
+      set('ls-wind', d.weather.wind);
+      set('ls-condition', d.weather.emoji + ' ' + d.weather.condition + ' — feels like ' + d.weather.feels + '°C');
+    }
+
+    // Quote
+    if (d.quote) {
+      const el = document.getElementById('ls-qtext');
+      if (el) el.textContent = '"' + d.quote.text + '"';
+      const ea = document.getElementById('ls-qauthor');
+      if (ea) ea.textContent = d.quote.author;
+    }
+
+    // Claude renewal
+    if (d.claude) {
+      const set = (id, v) => { const el = document.getElementById(id); if(el) el.textContent = v; };
+      set('ls-days', d.claude.daysLeft);
+      set('ls-hours', d.claude.hoursLeft);
+      set('ls-renewal', d.claude.renewalDate);
+    }
+
+    // Proxmox
+    if (d.proxmox) {
+      const set = (id, v) => { const el = document.getElementById(id); if(el) el.textContent = v; };
+      set('ls-total', d.proxmox.total);
+      set('ls-running', d.proxmox.running);
+      set('ls-stopped', d.proxmox.stopped);
+    }
+
+  } catch(e) { console.warn('Stats fetch failed', e); }
+})();
+</script>
+
 </body>
 </html>
