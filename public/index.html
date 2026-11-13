@@ -46,14 +46,18 @@
 
   .stage {
     position: fixed; inset: 0;
-    display: grid; place-items: center;
-    padding: 20px 16px;
+    display: flex;
+    padding: 20px 16px calc(28px + env(safe-area-inset-bottom));
+    overflow-y: auto; overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
   }
 
   /* ---------- peceta ---------- */
   .napkin {
     display: grid;
     width: min(100%, 400px);
+    margin: auto; /* në mes kur ka vend, lëvizet kur formulari është më i gjatë se ekrani */
+    flex-shrink: 0;
     animation: drop .8s cubic-bezier(.2, .8, .2, 1) both;
   }
   @keyframes drop { from { transform: translateY(-40px) rotate(-6deg); opacity: 0; } }
@@ -213,6 +217,17 @@
     box-shadow: 0 8px 16px -8px rgba(31, 60, 143, .8);
   }
   .send:disabled { opacity: .6; }
+  .ps { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 8px; }
+  .ps-chip {
+    font-family: var(--hand); font-size: 18px; line-height: 1.2;
+    padding: 5px 12px;
+    border: 1.5px dashed var(--ink-soft);
+    border-radius: 14px 10px 16px 9px / 10px 15px 9px 14px;
+    color: var(--ink);
+  }
+  .ps-chip::before { content: "+ "; opacity: .6; }
+  .ps-chip[aria-pressed="true"] { background: var(--ink); color: var(--napkin); border-style: solid; border-color: var(--ink); }
+  .ps-chip[aria-pressed="true"]::before { content: "✓ "; opacity: 1; }
   .err { font-family: var(--ui); font-weight: 600; font-size: 14px; color: #a3321f; margin-top: 10px; min-height: 1.2em; text-align: center; }
 
   /* ---------- fundi: buqeta ---------- */
@@ -303,7 +318,13 @@
 
         <div class="line">
           <label for="note">P.S.</label>
-          <textarea class="blank" id="note" maxlength="300" placeholder="opsionale, p.sh. makiato e madhe"></textarea>
+          <div class="ps" role="group" aria-label="Shto te P.S.">
+            <button type="button" class="ps-chip" aria-pressed="false">makiato e madhe</button>
+            <button type="button" class="ps-chip" aria-pressed="false">çaj në vend të kafes</button>
+            <button type="button" class="ps-chip" aria-pressed="false">edhe një kroasan</button>
+            <button type="button" class="ps-chip" aria-pressed="false">mos u vono</button>
+          </div>
+          <textarea class="blank" id="note" maxlength="300" placeholder="ose shkruaj vetë…"></textarea>
         </div>
 
         <button class="send" id="send" type="submit">Konfirmo</button>
@@ -362,11 +383,25 @@
       no.offsetWidth;
     }
     const nr = no.getBoundingClientRect();
-    let x, y, t = 0;
-    do {
-      x = pad + Math.random() * Math.max(1, W - nr.width - pad * 2);
-      y = pad + Math.random() * Math.max(1, H - nr.height - pad * 2);
-    } while (++t < 50 && x < yr.right + 12 && x + nr.width > yr.left - 12 && y < yr.bottom + 12 && y + nr.height > yr.top - 12);
+    // "Po" pas rritjes (madhësia e ardhshme, jo ajo gjatë animacionit)
+    const k = (1 + noCount * 0.32) / (parseFloat((yes.style.transform.match(/scale\(([\d.]+)/) || [0, 1])[1]) || 1);
+    const cx = (yr.left + yr.right) / 2, cy = (yr.top + yr.bottom) / 2;
+    const grown = { left: cx - yr.width * k / 2, right: cx + yr.width * k / 2, top: cy - yr.height * k / 2, bottom: cy + yr.height * k / 2 };
+    // zonat që s'duhen mbuluar: teksti poshtë pyetjes (pesha më e madhe), pyetja, "Po"
+    const zones = [[remark.getBoundingClientRect(), 4], [document.querySelector("h1").getBoundingClientRect(), 2], [grown, 1]];
+    const m = 12;
+    const cost = (x, y) => zones.reduce((sum, [z, w]) => {
+      const ox = Math.max(0, Math.min(x + nr.width, z.right + m) - Math.max(x, z.left - m));
+      const oy = Math.max(0, Math.min(y + nr.height, z.bottom + m) - Math.max(y, z.top - m));
+      return sum + ox * oy * w;
+    }, 0);
+    let x, y, best = Infinity;
+    for (let t = 0; t < 120 && best > 0; t++) {
+      const cx2 = pad + Math.random() * Math.max(1, W - nr.width - pad * 2);
+      const cy2 = pad + Math.random() * Math.max(1, H - nr.height - pad * 2);
+      const c = cost(cx2, cy2);
+      if (c < best) { best = c; x = cx2; y = cy2; }
+    }
     no.style.left = x + "px"; no.style.top = y + "px";
     no.style.transform = `rotate(${Math.round(Math.random() * 24 - 12)}deg)`;
   }
@@ -380,8 +415,8 @@
       return;
     }
     say(LINES[(noCount - 1) % LINES.length]);
-    yes.style.transform = `scale(${(1 + noCount * 0.32).toFixed(2)})`;
     moveNo();
+    yes.style.transform = `scale(${(1 + noCount * 0.32).toFixed(2)})`;
   });
   addEventListener("resize", () => { if (no.classList.contains("flying") && !no.classList.contains("hidden")) moveNo(); });
 
@@ -448,6 +483,20 @@
     }
   }));
   dateInput.addEventListener("change", () => setDate(dateInput.value));
+
+  // P.S.: prekja shton ose heq fjalinë
+  const noteEl = $("note");
+  document.querySelectorAll(".ps-chip").forEach((c) => c.addEventListener("click", () => {
+    const t = c.textContent.trim();
+    let parts = noteEl.value.split(",").map((x) => x.trim()).filter(Boolean);
+    const on = c.getAttribute("aria-pressed") !== "true";
+    parts = on ? [...parts, t] : parts.filter((x) => x !== t);
+    noteEl.value = parts.join(", ").slice(0, 300);
+    c.setAttribute("aria-pressed", String(on));
+  }));
+  noteEl.addEventListener("input", () => {
+    document.querySelectorAll(".ps-chip").forEach((c) => c.setAttribute("aria-pressed", String(noteEl.value.includes(c.textContent.trim()))));
+  });
 
   const hour = $("hour");
   for (let h = 7; h <= 23; h++) {
