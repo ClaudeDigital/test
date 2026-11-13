@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="sq">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>A po pijmë kafe?</title>
+<meta name="description" content="Një pyetje e thjeshtë.">
+<meta name="theme-color" content="#f6e7dc">
+<meta property="og:title" content="A po pijmë kafe? ☕">
+<meta property="og:description" content="Ke vetëm dy opsione. Njëri prej tyre s'funksionon.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☕</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #f6e7dc;
+    --paper: #fff8f2;
+    --coffee: #3b1f1a;
+    --milk: #8a5a4f;
+    --rose: #e0475b;
+    --rose-dark: #b8293d;
+    --line: #e9cfc0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body {
+    font-family: "Nunito", system-ui, sans-serif;
+    color: var(--coffee);
+    background:
+      radial-gradient(circle at 15% 10%, #fde3e3 0, transparent 40%),
+      radial-gradient(circle at 90% 85%, #f9dcc8 0, transparent 45%),
+      var(--cream);
+    overflow: hidden;
+    min-height: 100dvh;
+  }
+  .screen { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 24px 16px; }
+  .hidden { display: none !important; }
+
+  /* --- pyetja --- */
+  .ask { flex-direction: column; text-align: center; gap: 10px; }
+  .cup { width: 120px; height: 120px; margin-bottom: 6px; }
+  .steam path { animation: steam 2.6s ease-in-out infinite; opacity: 0; }
+  .steam path:nth-child(2) { animation-delay: .5s; }
+  .steam path:nth-child(3) { animation-delay: 1s; }
+  @keyframes steam { 0% { opacity: 0; transform: translateY(6px); } 40% { opacity: .8; } 100% { opacity: 0; transform: translateY(-10px); } }
+  h1 {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 700;
+    font-size: clamp(34px, 9vw, 60px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+  .sub {
+    min-height: 3em;
+    font-size: clamp(16px, 4.4vw, 20px);
+    color: var(--milk);
+    font-weight: 600;
+    max-width: 22em;
+    transition: opacity .2s;
+  }
+  .sub.pop { animation: pop .35s ease; }
+  @keyframes pop { 0% { transform: scale(.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .buttons { position: relative; display: flex; gap: 18px; align-items: center; justify-content: center; margin-top: 14px; min-height: 80px; }
+  button { font: inherit; cursor: pointer; border: 0; }
+  .yes {
+    background: var(--rose);
+    color: #fff;
+    font-weight: 800;
+    font-size: 22px;
+    padding: 14px 38px;
+    border-radius: 999px;
+    box-shadow: 0 8px 20px -6px rgba(184, 41, 61, .55);
+    transition: transform .35s cubic-bezier(.34, 1.56, .64, 1), border-radius .3s;
+    position: relative;
+    z-index: 5;
+    transform-origin: center;
+  }
+  .yes:active { filter: brightness(.95); }
+  .no {
+    background: var(--paper);
+    color: var(--coffee);
+    font-weight: 700;
+    font-size: 20px;
+    padding: 13px 32px;
+    border-radius: 999px;
+    border: 2px solid var(--line);
+    transition: left .3s ease, top .3s ease, transform .3s ease;
+    z-index: 3;
+    white-space: nowrap;
+  }
+  .no.flying { position: fixed; }
+  .yes.takeover {
+    position: fixed; inset: 0; width: 100vw; height: 100dvh;
+    border-radius: 0; transform: none !important;
+    font-family: "Fraunces", Georgia, serif;
+    font-size: clamp(56px, 18vw, 140px);
+    z-index: 20;
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  .yes.takeover small { display: block; font-family: "Nunito", sans-serif; font-size: 18px; font-weight: 600; opacity: .9; margin-top: 10px; }
+  @keyframes pulse { 50% { background: var(--rose-dark); } }
+
+  /* --- forma --- */
+  .card {
+    width: 100%; max-width: 420px;
+    background: var(--paper);
+    border-radius: 26px;
+    padding: 26px 22px 22px;
+    box-shadow: 0 24px 60px -24px rgba(59, 31, 26, .35);
+    max-height: calc(100dvh - 32px);
+    overflow-y: auto;
+    animation: rise .45s cubic-bezier(.2, .9, .3, 1.2);
+  }
+  @keyframes rise { from { transform: translateY(30px) scale(.96); opacity: 0; } }
+  .card h2 { font-family: "Fraunces", Georgia, serif; font-size: 30px; line-height: 1.1; }
+  .card p.lead { color: var(--milk); margin: 6px 0 18px; font-weight: 600; }
+  label { display: block; font-weight: 800; font-size: 14px; margin: 14px 0 6px; }
+  input, select, textarea {
+    width: 100%;
+    font: inherit; font-size: 17px;
+    color: var(--coffee);
+    background: #fff;
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    padding: 12px 14px;
+    outline: none;
+    appearance: none; -webkit-appearance: none;
+  }
+  textarea { resize: none; min-height: 70px; }
+  input:focus, select:focus, textarea:focus { border-color: var(--rose); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    background: #fff; border: 2px solid var(--line); border-radius: 999px;
+    padding: 9px 14px; font-weight: 700; font-size: 15px; color: var(--coffee);
+  }
+  .chip[aria-pressed="true"] { background: var(--rose); border-color: var(--rose); color: #fff; }
+  .row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+  .hint { font-size: 13px; color: var(--milk); margin-top: 6px; font-weight: 600; min-height: 1em; }
+  .select-wrap { position: relative; }
+  .select-wrap::after { content: "▾"; position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--milk); pointer-events: none; }
+  .confirm {
+    width: 100%; margin-top: 22px;
+    background: var(--rose); color: #fff; font-weight: 800; font-size: 19px;
+    padding: 15px; border-radius: 16px;
+    box-shadow: 0 10px 22px -8px rgba(184, 41, 61, .6);
+  }
+  .confirm:disabled { opacity: .6; }
+  .err { color: var(--rose-dark); font-weight: 700; font-size: 14px; margin-top: 10px; min-height: 1em; text-align: center; }
+
+  /* --- fundi --- */
+  .done { flex-direction: column; text-align: center; gap: 6px; }
+  .bouquet { width: min(78vw, 320px); height: auto; animation: bloom 1s cubic-bezier(.2, .9, .3, 1.3) both; transform-origin: 50% 90%; }
+  @keyframes bloom { from { transform: scale(.2) rotate(-12deg); opacity: 0; } }
+  .bouquet .flower { transform-box: fill-box; transform-origin: center; animation: sway 3.4s ease-in-out infinite; }
+  .bouquet .flower:nth-of-type(2n) { animation-delay: -1.2s; }
+  @keyframes sway { 50% { transform: rotate(6deg); } }
+  .done h2 { font-family: "Fraunces", Georgia, serif; font-size: clamp(30px, 8vw, 46px); line-height: 1.1; margin-top: 8px; }
+  .done p { color: var(--milk); text-shadow: 0 0 12px var(--cream); font-weight: 700; font-size: 18px; max-width: 22em; }
+  .summary { margin-top: 10px; background: var(--paper); border-radius: 18px; padding: 14px 18px; font-weight: 700; line-height: 1.6; box-shadow: 0 12px 30px -18px rgba(59,31,26,.4); }
+  .hearts { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 1; }
+  .screen { z-index: 2; }
+  .heart { position: absolute; bottom: -40px; font-size: 24px; animation: float linear forwards; }
+  @keyframes float {
+    0% { transform: translateY(0) translateX(0) rotate(0); opacity: 0; }
+    10% { opacity: 1; }
+    100% { transform: translateY(-115dvh) translateX(var(--drift)) rotate(var(--spin)); opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 1. Pyetja -->
+<section class="screen ask" id="ask">
+  <svg class="cup" viewBox="0 0 120 120" aria-hidden="true">
+    <g class="steam" fill="none" stroke="#c99a8a" stroke-width="4" stroke-linecap="round">
+      <path d="M44 34c-6-8 6-12 0-20"/>
+      <path d="M60 30c-6-8 6-12 0-20"/>
+      <path d="M76 34c-6-8 6-12 0-20"/>
+    </g>
+    <path d="M24 46h68v26c0 19-15 34-34 34S24 91 24 72z" fill="#fff8f2" stroke="#3b1f1a" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M92 54h6a12 12 0 0 1 0 24h-8" fill="none" stroke="#3b1f1a" stroke-width="4" stroke-linecap="round"/>
+    <path d="M30 52h56" stroke="#6b3a2e" stroke-width="7" stroke-linecap="round"/>
+    <path d="M52 78c-5-5-1-11 6-6 7-5 11 1 6 6l-6 6z" fill="#e0475b"/>
+  </svg>
+  <h1>A po pijmë kafe?</h1>
+  <p class="sub" id="sub">Pyetje e thjeshtë. Përgjigje edhe më e thjeshtë.</p>
+  <div class="buttons" id="buttons">
+    <button class="yes" id="yes" type="button">Po</button>
+    <button class="no" id="no" type="button">Jo</button>
+  </div>
+</section>
+
+<!-- 2. Forma -->
+<section class="screen hidden" id="form-screen">
+  <form class="card" id="form" novalidate>
+    <h2>E dija! ☕</h2>
+    <p class="lead">Tani vetëm detajet, që mos me ndodh “harrova”.</p>
+
+    <label for="name">Si e ke emrin?</label>
+    <input id="name" name="name" autocomplete="given-name" maxlength="60" placeholder="Emri yt" required>
+
+    <label>Kur?</label>
+    <div class="chips" id="day-chips">
+      <button type="button" class="chip" data-offset="0">Sot</button>
+      <button type="button" class="chip" data-offset="1">Nesër</button>
+      <button type="button" class="chip" data-offset="2">Pasnesër</button>
+      <button type="button" class="chip" data-offset="pick">Datë tjetër</button>
+    </div>
+    <input id="date" type="date" class="hidden" style="margin-top:10px" aria-label="Data">
+    <p class="hint" id="date-hint"></p>
+
+    <label>Në çfarë ore?</label>
+    <div class="row">
+      <div class="select-wrap"><select id="hour" aria-label="Ora"></select></div>
+      <div class="select-wrap"><select id="minute" aria-label="Minutat">
+        <option>00</option><option>15</option><option>30</option><option>45</option>
+      </select></div>
+    </div>
+
+    <label for="place">Ku?</label>
+    <input id="place" name="place" maxlength="120" placeholder="p.sh. kafiteria afër sheshit" required>
+
+    <label for="note">Diçka tjetër? <span style="font-weight:600;color:var(--milk)">(opsionale)</span></label>
+    <textarea id="note" maxlength="300" placeholder="p.sh. unë e dua makiato të madhe"></textarea>
+
+    <button class="confirm" id="confirm" type="submit">Konfirmo ☕</button>
+    <p class="err" id="err" role="alert"></p>
+  </form>
+</section>
+
+<!-- 3. Lulet -->
+<div class="hearts" id="hearts"></div>
+<section class="screen done hidden" id="done">
+  <svg class="bouquet" viewBox="0 0 300 320" aria-hidden="true">
+    <defs>
+      <g id="rose">
+        <circle r="20" fill="#e0475b"/>
+        <path d="M-12 -6a14 14 0 0 1 24 0a10 10 0 0 1-12 12a8 8 0 0 1-6-10" fill="none" stroke="#a51f33" stroke-width="3" stroke-linecap="round"/>
+        <path d="M-5 -1a6 6 0 0 1 10 2" fill="none" stroke="#a51f33" stroke-width="3" stroke-linecap="round"/>
+      </g>
+      <g id="daisy">
+        <g fill="#fff">
+          <ellipse rx="6" ry="14" cy="-12"/><ellipse rx="6" ry="14" cy="-12" transform="rotate(60)"/><ellipse rx="6" ry="14" cy="-12" transform="rotate(120)"/>
+          <ellipse rx="6" ry="14" cy="-12" transform="rotate(180)"/><ellipse rx="6" ry="14" cy="-12" transform="rotate(240)"/><ellipse rx="6" ry="14" cy="-12" transform="rotate(300)"/>
+        </g>
+        <circle r="7" fill="#f2b632"/>
+      </g>
+      <g id="tulip">
+        <path d="M-15 -4c0-14 6-22 15-24c9 2 15 10 15 24c0 12-7 18-15 18s-15-6-15-18z" fill="#f48aa0"/>
+        <path d="M0 -28c-5 8-5 22 0 32c5-10 5-24 0-32z" fill="#e46a85"/>
+      </g>
+    </defs>
+    <!-- kërcejtë -->
+    <g stroke="#4f8a4b" stroke-width="5" stroke-linecap="round" fill="none">
+      <path d="M150 250L95 95"/><path d="M150 250L150 70"/><path d="M150 250L205 95"/>
+      <path d="M150 250L65 145"/><path d="M150 250L235 145"/><path d="M150 250L120 120"/><path d="M150 250L182 120"/>
+    </g>
+    <g fill="#6aa35f">
+      <path d="M118 190c-26-6-38-24-36-36c16 4 32 16 36 36z"/>
+      <path d="M182 190c26-6 38-24 36-36c-16 4-32 16-36 36z"/>
+      <path d="M150 170c-8-20-2-36 8-42c4 16 2 30-8 42z"/>
+    </g>
+    <!-- lulet -->
+    <g transform="translate(65 145)"><g class="flower"><use href="#daisy"/></g></g>
+    <g transform="translate(235 145)"><g class="flower"><use href="#daisy"/></g></g>
+    <g transform="translate(95 95)"><g class="flower"><use href="#tulip"/></g></g>
+    <g transform="translate(205 95)"><g class="flower"><use href="#tulip"/></g></g>
+    <g transform="translate(120 122)"><g class="flower"><use href="#rose"/></g></g>
+    <g transform="translate(182 122)"><g class="flower"><use href="#rose"/></g></g>
+    <g transform="translate(150 70) scale(1.2)"><g class="flower"><use href="#rose"/></g></g>
+    <!-- letra e mbështjelljes -->
+    <path d="M88 200L150 312L212 200L180 214L150 196L120 214z" fill="#f3c6b4"/>
+    <path d="M88 200L150 312L120 214z" fill="#e8ad97"/>
+    <!-- fjongoja -->
+    <g fill="#e0475b">
+      <path d="M150 236c-14-14-34-14-34 0s20 14 34 0z"/>
+      <path d="M150 236c14-14 34-14 34 0s-20 14-34 0z"/>
+      <path d="M146 238l-14 30l10-4l6 8z"/><path d="M154 238l14 30l-10-4l-6 8z"/>
+      <circle cx="150" cy="236" r="7" fill="#b8293d"/>
+    </g>
+  </svg>
+  <h2 id="done-title">U bë! 💐</h2>
+  <p id="done-text">Shihemi atje.</p>
+  <div class="summary" id="summary"></div>
+</section>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const yes = $("yes"), no = $("no"), sub = $("sub");
+
+  const LINES = [
+    "A je i/e sigurt? 🤨",
+    "Mendoje edhe njëherë…",
+    "Kafja është në llogarinë time!",
+    "Po të marr edhe një kroasan 🥐",
+    "Butoni “Jo” po lodhet. Ti jo?",
+    "Ok, po bëhesh e/i vështirë 😅",
+    "Zemra ime po bën krak 💔",
+    "Ky buton “Jo” sot s'po punon mirë…",
+    "Mami thotë që jam djalë i mirë 🥺",
+    "A e di sa e mirë është makiatoja këtu?",
+    "Po shtyp gabim, besoj.",
+    "Shiko sa i madh u bë “Po”. Shenjë!",
+    "Ok, “Jo” s'pranohet si përgjigje.",
+    "Shansi i fundit… (s'është i fundit)",
+  ];
+  const TAKEOVER_AT = 9; // pas kaq “Jo”-ve, “Po” e mbulon ekranin
+  let noCount = 0, lineIdx = 0;
+
+  function moveNo() {
+    const pad = 16;
+    const r = no.getBoundingClientRect();
+    const yr = yes.getBoundingClientRect();
+    const W = window.innerWidth, H = window.innerHeight;
+    let x, y, tries = 0;
+    do {
+      x = pad + Math.random() * Math.max(1, W - r.width - pad * 2);
+      y = pad + Math.random() * Math.max(1, H - r.height - pad * 2);
+      tries++;
+    } while (tries < 40 && x < yr.right + 10 && x + r.width > yr.left - 10 && y < yr.bottom + 10 && y + r.height > yr.top - 10);
+    if (!no.classList.contains("flying")) {
+      no.style.left = r.left + "px"; no.style.top = r.top + "px";
+      no.classList.add("flying");
+      no.offsetWidth; // reflow që animacioni të nisë nga vendi i vjetër
+    }
+    no.style.left = x + "px"; no.style.top = y + "px";
+    no.style.transform = `rotate(${(Math.random() * 30 - 15).toFixed(0)}deg)`;
+  }
+
+  no.addEventListener("click", (e) => {
+    e.preventDefault();
+    noCount++;
+    sub.textContent = LINES[lineIdx % LINES.length];
+    lineIdx++;
+    sub.classList.remove("pop"); void sub.offsetWidth; sub.classList.add("pop");
+    if (navigator.vibrate) navigator.vibrate(30);
+
+    if (noCount >= TAKEOVER_AT) {
+      yes.classList.add("takeover");
+      yes.innerHTML = "PO<small>(s'ka më opsione 😌)</small>";
+      no.classList.add("hidden");
+      return;
+    }
+    const scale = 1 + noCount * 0.45;
+    yes.style.transform = `scale(${scale})`;
+    moveNo();
+  });
+
+  window.addEventListener("resize", () => { if (no.classList.contains("flying")) moveNo(); });
+
+  yes.addEventListener("click", () => {
+    $("ask").classList.add("hidden");
+    $("form-screen").classList.remove("hidden");
+    burst(10);
+    setTimeout(() => $("name").focus({ preventScroll: true }), 350);
+  });
+
+  // ---- forma ----
+  const MONTHS = ["janar","shkurt","mars","prill","maj","qershor","korrik","gusht","shtator","tetor","nëntor","dhjetor"];
+  const DAYS = ["e diel","e hënë","e martë","e mërkurë","e enjte","e premte","e shtunë"];
+  const pad2 = (n) => String(n).padStart(2, "0");
+  const iso = (d) => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+  const nice = (s) => { const [y, m, d] = s.split("-").map(Number); const dt = new Date(y, m - 1, d); return `${DAYS[dt.getDay()]}, ${d} ${MONTHS[m - 1]}`; };
+
+  let chosenDate = "";
+  const dateInput = $("date"), hint = $("date-hint");
+  dateInput.min = iso(new Date());
+
+  function setDate(s) {
+    chosenDate = s;
+    hint.textContent = s ? "📅 " + nice(s) : "";
+  }
+  document.querySelectorAll("#day-chips .chip").forEach((chip) => {
+    chip.addEventListener("click", () => {
+      document.querySelectorAll("#day-chips .chip").forEach((c) => c.setAttribute("aria-pressed", "false"));
+      chip.setAttribute("aria-pressed", "true");
+      const off = chip.dataset.offset;
+      if (off === "pick") {
+        dateInput.classList.remove("hidden");
+        setDate(dateInput.value || "");
+        try { dateInput.showPicker(); } catch { dateInput.focus(); }
+      } else {
+        dateInput.classList.add("hidden");
+        const d = new Date(); d.setDate(d.getDate() + Number(off));
+        setDate(iso(d));
+      }
+    });
+  });
+  dateInput.addEventListener("change", () => setDate(dateInput.value));
+
+  const hourSel = $("hour");
+  for (let h = 7; h <= 23; h++) {
+    const o = document.createElement("option");
+    o.value = pad2(h); o.textContent = pad2(h);
+    if (h === 18) o.selected = true;
+    hourSel.appendChild(o);
+  }
+
+  $("form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const err = $("err");
+    err.textContent = "";
+    const name = $("name").value.trim();
+    const place = $("place").value.trim();
+    const time = `${hourSel.value}:${$("minute").value}`;
+    if (!name) { err.textContent = "Si e ke emrin? 🙂"; return $("name").focus(); }
+    if (!chosenDate) { err.textContent = "Zgjidh ditën."; return; }
+    if (chosenDate < iso(new Date())) { err.textContent = "Kjo datë ka kaluar 😄"; return; }
+    if (!place) { err.textContent = "Ku po takohemi?"; return $("place").focus(); }
+
+    const btn = $("confirm");
+    btn.disabled = true; btn.textContent = "Po dërgoj…";
+    try {
+      const r = await fetch("/api/confirm", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, date: chosenDate, time, place, note: $("note").value.trim(), noCount }),
+      });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(j.error || "Diçka shkoi keq. Provo prapë.");
+      showDone(name, chosenDate, time, place);
+    } catch (ex) {
+      err.textContent = ex.message || "S'ka internet? Provo prapë.";
+      btn.disabled = false; btn.textContent = "Konfirmo ☕";
+    }
+  });
+
+  function esc(s) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+
+  function showDone(name, date, time, place) {
+    $("form-screen").classList.add("hidden");
+    $("done").classList.remove("hidden");
+    $("done-title").textContent = `Faleminderit, ${name}! 💐`;
+    $("done-text").textContent = "Mezi po pres. Kafja e para është gati në kokën time.";
+    $("summary").innerHTML = `📅 ${esc(nice(date))}<br>🕒 ora ${esc(time)}<br>📍 ${esc(place)}`;
+    burst(36);
+    setInterval(() => burst(4), 1400);
+  }
+
+  const HEARTS = ["❤️", "💕", "💖", "💗", "🌸", "💘", "🌷"];
+  function burst(n) {
+    const box = $("hearts");
+    for (let i = 0; i < n; i++) {
+      const h = document.createElement("span");
+      h.className = "heart";
+      h.textContent = HEARTS[Math.floor(Math.random() * HEARTS.length)];
+      h.style.left = Math.random() * 100 + "vw";
+      h.style.fontSize = 16 + Math.random() * 26 + "px";
+      h.style.setProperty("--drift", (Math.random() * 120 - 60).toFixed(0) + "px");
+      h.style.setProperty("--spin", (Math.random() * 80 - 40).toFixed(0) + "deg");
+      h.style.animationDuration = 4 + Math.random() * 4 + "s";
+      h.style.animationDelay = Math.random() * 0.8 + "s";
+      box.appendChild(h);
+      setTimeout(() => h.remove(), 9500);
+    }
+  }
+})();
+</script>
+</body>
+</html>
