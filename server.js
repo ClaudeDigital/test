@@ -62,7 +62,7 @@ async function sendMail(b) {
   const when = `${fmtDate(b.date)}, ora ${b.time}`;
   const html = `
   <div style="font-family:Georgia,serif;max-width:520px;margin:auto;background:#fff7f2;border-radius:16px;padding:28px;color:#3b1f1a">
-    <p style="font-size:40px;margin:0">☕💐</p>
+    <p style="font-size:40px;margin:0">☕</p>
     <h1 style="font-size:24px;margin:8px 0 4px">${esc(b.name)} tha PO!</h1>
     <p style="margin:0 0 20px;color:#8a5a4f">Kafja u caktua.</p>
     <table style="font-size:16px;border-collapse:collapse">
