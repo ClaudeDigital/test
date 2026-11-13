@@ -48,23 +48,25 @@
     position: fixed; inset: 0;
     display: grid; place-items: center;
     padding: 20px 16px;
-    perspective: 1600px;
   }
 
   /* ---------- peceta ---------- */
   .napkin {
     display: grid;
     width: min(100%, 400px);
-    transform-style: preserve-3d;
-    transition: transform .9s cubic-bezier(.6, 0, .2, 1);
     animation: drop .8s cubic-bezier(.2, .8, .2, 1) both;
   }
-  .napkin.flipped { transform: rotateY(180deg) rotate(1.5deg); }
   @keyframes drop { from { transform: translateY(-40px) rotate(-6deg); opacity: 0; } }
+  /* kalimi: peceta e parë largohet, e dyta vendoset në tavolinë */
+  .napkin.leaving { animation: leave .45s cubic-bezier(.5, 0, .9, .4) forwards; }
+  @keyframes leave { to { transform: translate(-36px, -24px) rotate(-7deg) scale(.97); opacity: 0; } }
+  .napkin.arrive { animation: arrive .75s cubic-bezier(.2, .8, .2, 1) both; }
+  @keyframes arrive {
+    from { transform: translate(40px, 30px) rotate(7deg) scale(.97); opacity: 0; }
+    to { transform: none; opacity: 1; }
+  }
   .face {
     grid-area: 1 / 1;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
     position: relative;
     background-color: var(--napkin);
     background-image:
@@ -80,12 +82,9 @@
       0 8px 18px -8px rgba(0,0,0,.45);
   }
   .front { transform: rotate(-1.5deg); }
-  .back { transform: rotateY(180deg); display: none; }
-  .half .front { display: none; }
-  .half .back { display: block; }
-  /* pas rrotullimit: pa 3D, që prekjet të punojnë kudo */
-  .napkin.settled { transform: rotate(1.5deg); transition: none; animation: none; }
-  .settled .back { transform: none; }
+  .back { transform: rotate(1.5deg); display: none; }
+  .swapped .front { display: none; }
+  .swapped .back { display: block; }
   /* gjurma e filxhanit */
   .ring {
     position: absolute; width: 132px; height: 132px; right: -26px; top: -30px;
@@ -231,20 +230,17 @@
   }
   .note {
     position: absolute; z-index: 2;
-    left: 50%; bottom: max(28px, env(safe-area-inset-bottom));
-    width: min(calc(100% - 40px), 360px);
-    background: var(--napkin);
-    padding: 18px 22px 20px;
-    border-radius: 4px;
-    font-family: var(--hand); font-size: 21px; line-height: 1.35; color: var(--ink);
-    box-shadow: 0 24px 40px -16px rgba(0,0,0,.7);
-    transform: translateX(-50%) rotate(-2.5deg);
-    animation: slip .9s 1.4s cubic-bezier(.2, .9, .3, 1.15) both;
+    left: 50%; bottom: max(34px, env(safe-area-inset-bottom));
+    width: min(calc(100% - 40px), 440px);
+    transform: translateX(-50%);
+    color: #fbf6ec; text-align: center;
+    text-shadow: 0 2px 14px rgba(0,0,0,.55);
   }
-  .note strong { font-weight: 700; }
-  .note .sign { display: block; text-align: right; margin-top: 6px; font-size: 19px; opacity: .8; }
-  @keyframes slip { from { transform: translateX(-50%) translateY(140%) rotate(6deg); } }
-  .credit { position: absolute; z-index: 2; right: 10px; top: 8px; font-size: 11px; color: rgba(255,255,255,.45); font-family: var(--ui); }
+  .note > * { display: block; animation: rise 1s cubic-bezier(.2, .8, .2, 1) both; }
+  .note .big { font-family: var(--hand); font-weight: 700; font-size: clamp(34px, 9vw, 48px); line-height: 1.05; animation-delay: 1.5s; }
+  .note .when { font-family: var(--ui); font-size: 16px; line-height: 1.5; margin-top: 12px; opacity: .92; animation-delay: 1.9s; }
+  .note .joke { font-family: var(--hand); font-size: 20px; margin-top: 14px; color: #f2c14e; animation-delay: 2.5s; }
+  @keyframes rise { from { opacity: 0; transform: translateY(14px); } }
 
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0s !important; transition-duration: .01ms !important; }
@@ -274,7 +270,7 @@
     <!-- ana e pasme -->
     <section class="face back" id="back" aria-label="Detajet">
       <form id="form" novalidate>
-        <h2>E dija.</h2>
+        <h2>Atëherë, ta lëmë me shkrim:</h2>
 
         <div class="line">
           <label for="name">Unë jam</label>
@@ -325,7 +321,6 @@
 <section class="done hidden" id="done" aria-live="polite">
   <img id="bouquet" alt="Një buqetë me trëndafila portokalli dhe karafila të bardhë, e mbështjellë me letër">
   <p class="note" id="final-note"></p>
-  <span class="credit">Foto: Lizzie / Unsplash</span>
 </section>
 
 <script>
@@ -404,17 +399,18 @@
     no.classList.add("hidden");
     yes.style.transform = "";
     yes.classList.add("checked");
-    say("E dija.");
+    say("Më në fund!");
+    const nap = $("napkin");
     setTimeout(() => {
-      const nap = $("napkin");
-      nap.classList.add("flipped");
-      $("front").setAttribute("aria-hidden", "true");
-      setTimeout(() => nap.classList.add("half"), 430); // në mes të rrotullimit, kur peceta është anash
+      nap.classList.add("leaving");
       setTimeout(() => {
-        nap.classList.add("settled");
-        $("name").focus({ preventScroll: true });
-      }, 950);
-    }, 650);
+        // ndërrimi ndodh kur peceta s'duket, që lartësia e re të mos shihet
+        nap.classList.remove("leaving");
+        nap.classList.add("swapped", "arrive");
+        $("front").setAttribute("aria-hidden", "true");
+        setTimeout(() => $("name").focus({ preventScroll: true }), 750);
+      }, 450);
+    }, 900);
   }
   yes.addEventListener("click", accept);
   $("takeover").addEventListener("click", accept);
@@ -497,14 +493,11 @@
       : `${DAYS_ACC[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]}`;
     const note = $("final-note");
     note.textContent = "";
-    const add = (t, strong) => { const el = document.createElement(strong ? "strong" : "span"); el.textContent = t; note.appendChild(el); };
-    add(`Faleminderit, ${name}.`, true);
-    note.appendChild(document.createElement("br"));
-    add(`Shihemi ${when}, në orën ${time}, te ${place}.`);
-    const sign = document.createElement("span");
-    sign.className = "sign";
-    sign.textContent = "Lulet i sjell unë.";
-    note.appendChild(sign);
+    const add = (cls, t) => { const el = document.createElement("span"); el.className = cls; el.textContent = t; note.appendChild(el); };
+    const When = when.charAt(0).toUpperCase() + when.slice(1);
+    add("big", `U morëm vesh, ${name}.`);
+    add("when", `${When}, në orën ${time}, te ${place}.`);
+    add("joke", "Nëse vonohesh, e pi edhe kafen tënde.");
 
     const img = $("bouquet");
     img.src = photo.src || "/buqeta-700.jpg";
