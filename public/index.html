@@ -4,402 +4,461 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>A po pijmë kafe?</title>
-<meta name="description" content="Një pyetje e thjeshtë.">
-<meta name="theme-color" content="#f6e7dc">
-<meta property="og:title" content="A po pijmë kafe? ☕">
-<meta property="og:description" content="Ke vetëm dy opsione. Njëri prej tyre s'funksionon.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☕</text></svg>">
+<meta name="description" content="Një pyetje, dy përgjigje.">
+<meta name="theme-color" content="#18221c">
+<meta property="og:title" content="A po pijmë kafe?">
+<meta property="og:description" content="Një pyetje, dy përgjigje. Njëra prej tyre s'punon.">
+<meta property="og:image" content="/buqeta-700.jpg">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%2318221c'/><path d='M16 26h28v10c0 9-6 14-14 14s-14-5-14-14z' fill='none' stroke='%23f4efe6' stroke-width='4' stroke-linejoin='round'/><path d='M44 30h3a5 5 0 0 1 0 10h-4' fill='none' stroke='%23f4efe6' stroke-width='4' stroke-linecap='round'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Hanken+Grotesk:wght@400;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --cream: #f6e7dc;
-    --paper: #fff8f2;
-    --coffee: #3b1f1a;
-    --milk: #8a5a4f;
-    --rose: #e0475b;
-    --rose-dark: #b8293d;
-    --line: #e9cfc0;
+    --table: #18221c;        /* tavolina, e gjelbër e errët si sfondi i fotos */
+    --table-vein: #24332a;
+    --napkin: #f6f2ea;
+    --napkin-edge: #e4dccd;
+    --kraft: #cdb9ad;        /* letra e buqetës */
+    --ink: #1f3c8f;          /* stilolapsi blu */
+    --ink-soft: rgba(31, 60, 143, .55);
+    --coffee: #8a5b3c;
+    --hand: "Kalam", "Comic Sans MS", cursive;
+    --ui: "Hanken Grotesk", system-ui, sans-serif;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body { height: 100%; }
   body {
-    font-family: "Nunito", system-ui, sans-serif;
-    color: var(--coffee);
-    background:
-      radial-gradient(circle at 15% 10%, #fde3e3 0, transparent 40%),
-      radial-gradient(circle at 90% 85%, #f9dcc8 0, transparent 45%),
-      var(--cream);
-    overflow: hidden;
+    font-family: var(--ui);
+    color: var(--ink);
+    background-color: var(--table);
+    background-image:
+      radial-gradient(120% 60% at 20% 0%, rgba(255,255,255,.05), transparent 60%),
+      linear-gradient(115deg, transparent 0 38%, var(--table-vein) 40%, transparent 44% 100%),
+      linear-gradient(160deg, transparent 0 62%, rgba(255,255,255,.035) 63%, transparent 66% 100%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     min-height: 100dvh;
+    overflow: hidden;
   }
-  .screen { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 24px 16px; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  :focus-visible { outline: 3px solid #f2c14e; outline-offset: 4px; }
   .hidden { display: none !important; }
 
-  /* --- pyetja --- */
-  .ask { flex-direction: column; text-align: center; gap: 10px; }
-  .cup { width: 120px; height: 120px; margin-bottom: 6px; }
-  .steam path { animation: steam 2.6s ease-in-out infinite; opacity: 0; }
-  .steam path:nth-child(2) { animation-delay: .5s; }
-  .steam path:nth-child(3) { animation-delay: 1s; }
-  @keyframes steam { 0% { opacity: 0; transform: translateY(6px); } 40% { opacity: .8; } 100% { opacity: 0; transform: translateY(-10px); } }
-  h1 {
-    font-family: "Fraunces", Georgia, serif;
-    font-weight: 700;
-    font-size: clamp(34px, 9vw, 60px);
-    line-height: 1.05;
-    letter-spacing: -0.02em;
+  .stage {
+    position: fixed; inset: 0;
+    display: grid; place-items: center;
+    padding: 20px 16px;
+    perspective: 1600px;
   }
-  .sub {
-    min-height: 3em;
-    font-size: clamp(16px, 4.4vw, 20px);
-    color: var(--milk);
-    font-weight: 600;
-    max-width: 22em;
-    transition: opacity .2s;
-  }
-  .sub.pop { animation: pop .35s ease; }
-  @keyframes pop { 0% { transform: scale(.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-  .buttons { position: relative; display: flex; gap: 18px; align-items: center; justify-content: center; margin-top: 14px; min-height: 80px; }
-  button { font: inherit; cursor: pointer; border: 0; }
-  .yes {
-    background: var(--rose);
-    color: #fff;
-    font-weight: 800;
-    font-size: 22px;
-    padding: 14px 38px;
-    border-radius: 999px;
-    box-shadow: 0 8px 20px -6px rgba(184, 41, 61, .55);
-    transition: transform .35s cubic-bezier(.34, 1.56, .64, 1), border-radius .3s;
-    position: relative;
-    z-index: 5;
-    transform-origin: center;
-  }
-  .yes:active { filter: brightness(.95); }
-  .no {
-    background: var(--paper);
-    color: var(--coffee);
-    font-weight: 700;
-    font-size: 20px;
-    padding: 13px 32px;
-    border-radius: 999px;
-    border: 2px solid var(--line);
-    transition: left .3s ease, top .3s ease, transform .3s ease;
-    z-index: 3;
-    white-space: nowrap;
-  }
-  .no.flying { position: fixed; }
-  .yes.takeover {
-    position: fixed; inset: 0; width: 100vw; height: 100dvh;
-    border-radius: 0; transform: none !important;
-    font-family: "Fraunces", Georgia, serif;
-    font-size: clamp(56px, 18vw, 140px);
-    z-index: 20;
-    animation: pulse 1.6s ease-in-out infinite;
-  }
-  .yes.takeover small { display: block; font-family: "Nunito", sans-serif; font-size: 18px; font-weight: 600; opacity: .9; margin-top: 10px; }
-  @keyframes pulse { 50% { background: var(--rose-dark); } }
 
-  /* --- forma --- */
-  .card {
-    width: 100%; max-width: 420px;
-    background: var(--paper);
-    border-radius: 26px;
-    padding: 26px 22px 22px;
-    box-shadow: 0 24px 60px -24px rgba(59, 31, 26, .35);
-    max-height: calc(100dvh - 32px);
-    overflow-y: auto;
-    animation: rise .45s cubic-bezier(.2, .9, .3, 1.2);
+  /* ---------- peceta ---------- */
+  .napkin {
+    display: grid;
+    width: min(100%, 400px);
+    transform-style: preserve-3d;
+    transition: transform .9s cubic-bezier(.6, 0, .2, 1);
+    animation: drop .8s cubic-bezier(.2, .8, .2, 1) both;
   }
-  @keyframes rise { from { transform: translateY(30px) scale(.96); opacity: 0; } }
-  .card h2 { font-family: "Fraunces", Georgia, serif; font-size: 30px; line-height: 1.1; }
-  .card p.lead { color: var(--milk); margin: 6px 0 18px; font-weight: 600; }
-  label { display: block; font-weight: 800; font-size: 14px; margin: 14px 0 6px; }
-  input, select, textarea {
+  .napkin.flipped { transform: rotateY(180deg) rotate(1.5deg); }
+  @keyframes drop { from { transform: translateY(-40px) rotate(-6deg); opacity: 0; } }
+  .face {
+    grid-area: 1 / 1;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    position: relative;
+    background-color: var(--napkin);
+    background-image:
+      repeating-linear-gradient(0deg, rgba(0,0,0,.018) 0 2px, transparent 2px 5px),
+      repeating-linear-gradient(90deg, rgba(0,0,0,.018) 0 2px, transparent 2px 5px);
+    border-radius: 6px;
+    padding: 34px 28px 30px;
+    box-shadow:
+      inset 0 0 0 10px var(--napkin),
+      inset 0 0 0 11px var(--napkin-edge),
+      0 1px 0 rgba(255,255,255,.4),
+      0 30px 60px -20px rgba(0,0,0,.6),
+      0 8px 18px -8px rgba(0,0,0,.45);
+  }
+  .front { transform: rotate(-1.5deg); }
+  .back { transform: rotateY(180deg); display: none; }
+  .half .front { display: none; }
+  .half .back { display: block; }
+  /* pas rrotullimit: pa 3D, që prekjet të punojnë kudo */
+  .napkin.settled { transform: rotate(1.5deg); transition: none; animation: none; }
+  .settled .back { transform: none; }
+  /* gjurma e filxhanit */
+  .ring {
+    position: absolute; width: 132px; height: 132px; right: -26px; top: -30px;
+    border-radius: 50%;
+    background: radial-gradient(circle, transparent 57%, rgba(138,91,60,.16) 59%, rgba(138,91,60,.07) 63%, transparent 66%);
+    pointer-events: none;
+    transform: rotate(20deg) scaleX(1.04);
+  }
+
+  h1, .hand { font-family: var(--hand); }
+  h1 {
+    font-weight: 700;
+    font-size: clamp(40px, 12vw, 54px);
+    line-height: .98;
+    letter-spacing: -.01em;
+    transform: rotate(-2deg);
+    margin: 4px 0 26px;
+  }
+
+  .choices { display: flex; gap: 22px; align-items: center; min-height: 64px; }
+  .choice {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-family: var(--hand); font-size: 32px; font-weight: 400;
+    color: var(--ink);
+    padding: 4px 6px;
+    line-height: 1;
+    position: relative;
+  }
+  .box {
+    width: 34px; height: 34px; flex: none;
+    border: 2.5px solid var(--ink);
+    border-radius: 6px 3px 7px 2px / 3px 7px 2px 6px;
+    position: relative;
+  }
+  .box svg { position: absolute; inset: -10px -8px -4px -6px; width: calc(100% + 14px); height: calc(100% + 14px); overflow: visible; }
+  .box path { fill: none; stroke: var(--ink); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 60; stroke-dashoffset: 60; }
+  .checked .box path { animation: tick .35s ease-out forwards; }
+  @keyframes tick { to { stroke-dashoffset: 0; } }
+
+  #yes { transform-origin: left center; transition: transform .45s cubic-bezier(.34, 1.5, .5, 1); z-index: 3; }
+  #no { z-index: 4; transition: left .35s ease, top .35s ease, transform .35s ease; white-space: nowrap; }
+  #no.flying {
+    position: fixed;
+    background: var(--napkin);
+    padding: 10px 16px 10px 12px;
+    border-radius: 4px;
+    box-shadow: 0 10px 22px -8px rgba(0,0,0,.55);
+  }
+
+  .remark {
+    font-family: var(--hand);
+    font-size: 21px;
+    line-height: 1.3;
+    margin-top: 22px;
+    min-height: 2.7em;
+    color: var(--ink);
+  }
+  .remark span { display: inline-block; clip-path: inset(0 100% 0 0); }
+  .remark span.write { animation: write .9s steps(22, end) forwards; }
+  @keyframes write { to { clip-path: inset(0 0 0 0); } }
+  .remark .muted { opacity: .55; }
+
+  /* "Po" që e mbulon ekranin */
+  .takeover {
+    position: fixed; inset: 0; z-index: 20;
+    background: var(--ink);
+    color: var(--napkin);
+    display: grid; place-items: center; text-align: center;
+    font-family: var(--hand);
+    animation: spill .5s cubic-bezier(.2, .8, .2, 1);
+  }
+  .takeover b { display: block; font-size: clamp(110px, 38vw, 220px); line-height: .9; font-weight: 700; }
+  .takeover small { font-size: 22px; opacity: .8; }
+  @keyframes spill { from { clip-path: circle(0 at 50% 50%); } to { clip-path: circle(150% at 50% 50%); } }
+
+  /* ---------- ana e pasme: formulari si fjali ---------- */
+  .back h2 { font-family: var(--hand); font-weight: 700; font-size: 34px; line-height: 1; transform: rotate(-1.5deg); margin-bottom: 18px; }
+  .line { font-family: var(--hand); font-size: 22px; line-height: 1.5; margin-top: 12px; }
+  .line label { display: block; }
+  .blank {
+    font-family: var(--hand); font-size: 22px; font-weight: 700;
+    color: var(--ink);
     width: 100%;
-    font: inherit; font-size: 17px;
-    color: var(--coffee);
-    background: #fff;
-    border: 2px solid var(--line);
-    border-radius: 14px;
-    padding: 12px 14px;
+    background: transparent;
+    border: 0;
+    border-bottom: 2px dashed var(--ink-soft);
+    padding: 2px 2px 4px;
     outline: none;
+    border-radius: 0;
     appearance: none; -webkit-appearance: none;
   }
-  textarea { resize: none; min-height: 70px; }
-  input:focus, select:focus, textarea:focus { border-color: var(--rose); }
-  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-  .chip {
-    background: #fff; border: 2px solid var(--line); border-radius: 999px;
-    padding: 9px 14px; font-weight: 700; font-size: 15px; color: var(--coffee);
-  }
-  .chip[aria-pressed="true"] { background: var(--rose); border-color: var(--rose); color: #fff; }
-  .row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
-  .hint { font-size: 13px; color: var(--milk); margin-top: 6px; font-weight: 600; min-height: 1em; }
-  .select-wrap { position: relative; }
-  .select-wrap::after { content: "▾"; position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--milk); pointer-events: none; }
-  .confirm {
-    width: 100%; margin-top: 22px;
-    background: var(--rose); color: #fff; font-weight: 800; font-size: 19px;
-    padding: 15px; border-radius: 16px;
-    box-shadow: 0 10px 22px -8px rgba(184, 41, 61, .6);
-  }
-  .confirm:disabled { opacity: .6; }
-  .err { color: var(--rose-dark); font-weight: 700; font-size: 14px; margin-top: 10px; min-height: 1em; text-align: center; }
+  .blank::placeholder { color: var(--ink-soft); font-weight: 400; }
+  .blank:focus { border-bottom-style: solid; border-bottom-color: var(--ink); }
+  textarea.blank { resize: none; height: 2.6em; line-height: 1.3; }
 
-  /* --- fundi --- */
-  .done { flex-direction: column; text-align: center; gap: 6px; }
-  .bouquet { width: min(78vw, 320px); height: auto; animation: bloom 1s cubic-bezier(.2, .9, .3, 1.3) both; transform-origin: 50% 90%; }
-  @keyframes bloom { from { transform: scale(.2) rotate(-12deg); opacity: 0; } }
-  .bouquet .flower { transform-box: fill-box; transform-origin: center; animation: sway 3.4s ease-in-out infinite; }
-  .bouquet .flower:nth-of-type(2n) { animation-delay: -1.2s; }
-  @keyframes sway { 50% { transform: rotate(6deg); } }
-  .done h2 { font-family: "Fraunces", Georgia, serif; font-size: clamp(30px, 8vw, 46px); line-height: 1.1; margin-top: 8px; }
-  .done p { color: var(--milk); text-shadow: 0 0 12px var(--cream); font-weight: 700; font-size: 18px; max-width: 22em; }
-  .summary { margin-top: 10px; background: var(--paper); border-radius: 18px; padding: 14px 18px; font-weight: 700; line-height: 1.6; box-shadow: 0 12px 30px -18px rgba(59,31,26,.4); }
-  .hearts { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 1; }
-  .screen { z-index: 2; }
-  .heart { position: absolute; bottom: -40px; font-size: 24px; animation: float linear forwards; }
-  @keyframes float {
-    0% { transform: translateY(0) translateX(0) rotate(0); opacity: 0; }
-    10% { opacity: 1; }
-    100% { transform: translateY(-115dvh) translateX(var(--drift)) rotate(var(--spin)); opacity: 0; }
+  .days { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 2px; }
+  .day {
+    font-family: var(--hand); font-size: 21px; padding: 2px 6px;
+    position: relative;
   }
+  .day[aria-pressed="true"]::after {
+    content: ""; position: absolute; inset: -4px -6px;
+    border: 2.5px solid var(--ink);
+    border-radius: 50% 46% 52% 44% / 54% 48% 50% 46%;
+    transform: rotate(-3deg);
+    animation: circle .3s ease-out;
+  }
+  @keyframes circle { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+  .date-pick { margin-top: 8px; font-family: var(--ui); font-size: 16px; font-weight: 600; }
+  .when-text { font-family: var(--hand); font-size: 17px; opacity: .7; min-height: 1.4em; }
+
+  .time { display: inline-flex; align-items: baseline; gap: 4px; }
+  .time select {
+    font-family: var(--hand); font-size: 24px; font-weight: 700; color: var(--ink);
+    background: transparent; border: 0; border-bottom: 2px dashed var(--ink-soft);
+    padding: 0 4px; appearance: none; -webkit-appearance: none; border-radius: 0;
+    text-align: center;
+  }
+
+  .send {
+    margin-top: 24px; width: 100%;
+    background: var(--ink); color: var(--napkin);
+    font-family: var(--ui); font-weight: 600; font-size: 18px;
+    padding: 15px;
+    border-radius: 10px 6px 12px 5px / 6px 12px 5px 10px;
+    box-shadow: 0 8px 16px -8px rgba(31, 60, 143, .8);
+  }
+  .send:disabled { opacity: .6; }
+  .err { font-family: var(--ui); font-weight: 600; font-size: 14px; color: #a3321f; margin-top: 10px; min-height: 1.2em; text-align: center; }
+
+  /* ---------- fundi: buqeta ---------- */
+  .done { position: fixed; inset: 0; background: #121a15; overflow: hidden; }
+  .done img {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; object-position: 50% 42%;
+    animation: reveal 2.2s cubic-bezier(.2, .7, .2, 1) both;
+  }
+  @media (min-aspect-ratio: 4/5) { .done img { object-fit: contain; } }
+  @keyframes reveal { from { transform: scale(1.12); filter: brightness(.2) saturate(.6); } }
+  .done::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(to top, rgba(18,26,21,.85) 0%, rgba(18,26,21,.2) 38%, transparent 55%);
+  }
+  .note {
+    position: absolute; z-index: 2;
+    left: 50%; bottom: max(28px, env(safe-area-inset-bottom));
+    width: min(calc(100% - 40px), 360px);
+    background: var(--napkin);
+    padding: 18px 22px 20px;
+    border-radius: 4px;
+    font-family: var(--hand); font-size: 21px; line-height: 1.35; color: var(--ink);
+    box-shadow: 0 24px 40px -16px rgba(0,0,0,.7);
+    transform: translateX(-50%) rotate(-2.5deg);
+    animation: slip .9s 1.4s cubic-bezier(.2, .9, .3, 1.15) both;
+  }
+  .note strong { font-weight: 700; }
+  .note .sign { display: block; text-align: right; margin-top: 6px; font-size: 19px; opacity: .8; }
+  @keyframes slip { from { transform: translateX(-50%) translateY(140%) rotate(6deg); } }
+  .credit { position: absolute; z-index: 2; right: 10px; top: 8px; font-size: 11px; color: rgba(255,255,255,.45); font-family: var(--ui); }
 
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition: none !important; }
+    *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0s !important; transition-duration: .01ms !important; }
   }
 </style>
 </head>
 <body>
 
-<!-- 1. Pyetja -->
-<section class="screen ask" id="ask">
-  <svg class="cup" viewBox="0 0 120 120" aria-hidden="true">
-    <g class="steam" fill="none" stroke="#c99a8a" stroke-width="4" stroke-linecap="round">
-      <path d="M44 34c-6-8 6-12 0-20"/>
-      <path d="M60 30c-6-8 6-12 0-20"/>
-      <path d="M76 34c-6-8 6-12 0-20"/>
-    </g>
-    <path d="M24 46h68v26c0 19-15 34-34 34S24 91 24 72z" fill="#fff8f2" stroke="#3b1f1a" stroke-width="4" stroke-linejoin="round"/>
-    <path d="M92 54h6a12 12 0 0 1 0 24h-8" fill="none" stroke="#3b1f1a" stroke-width="4" stroke-linecap="round"/>
-    <path d="M30 52h56" stroke="#6b3a2e" stroke-width="7" stroke-linecap="round"/>
-    <path d="M52 78c-5-5-1-11 6-6 7-5 11 1 6 6l-6 6z" fill="#e0475b"/>
-  </svg>
-  <h1>A po pijmë kafe?</h1>
-  <p class="sub" id="sub">Pyetje e thjeshtë. Përgjigje edhe më e thjeshtë.</p>
-  <div class="buttons" id="buttons">
-    <button class="yes" id="yes" type="button">Po</button>
-    <button class="no" id="no" type="button">Jo</button>
+<main class="stage" id="stage">
+  <div class="napkin" id="napkin">
+
+    <!-- ana e parë -->
+    <section class="face front" id="front" aria-labelledby="q">
+      <span class="ring" aria-hidden="true"></span>
+      <h1 id="q">A po pijmë kafe?</h1>
+      <div class="choices">
+        <button class="choice" id="yes" type="button">
+          <span class="box"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M7 21l9 9L36 4"/></svg></span>Po
+        </button>
+        <button class="choice" id="no" type="button">
+          <span class="box"></span>Jo
+        </button>
+      </div>
+      <p class="remark" id="remark" aria-live="polite"><span class="muted write">Shëno njërën.</span></p>
+    </section>
+
+    <!-- ana e pasme -->
+    <section class="face back" id="back" aria-label="Detajet">
+      <form id="form" novalidate>
+        <h2>E dija.</h2>
+
+        <div class="line">
+          <label for="name">Unë jam</label>
+          <input class="blank" id="name" maxlength="60" autocomplete="given-name" placeholder="emri yt">
+        </div>
+
+        <div class="line">
+          <span id="day-label">Takohemi</span>
+          <div class="days" role="group" aria-labelledby="day-label">
+            <button type="button" class="day" data-offset="0" aria-pressed="false">sot</button>
+            <button type="button" class="day" data-offset="1" aria-pressed="false">nesër</button>
+            <button type="button" class="day" data-offset="2" aria-pressed="false">pasnesër</button>
+            <button type="button" class="day" data-offset="pick" aria-pressed="false">ditë tjetër</button>
+          </div>
+          <input class="blank date-pick hidden" id="date" type="date" aria-label="Data">
+          <div class="when-text" id="when-text"></div>
+        </div>
+
+        <div class="line">
+          në orën
+          <span class="time">
+            <select id="hour" aria-label="Ora"></select>:<select id="minute" aria-label="Minutat"><option>00</option><option>15</option><option selected>30</option><option>45</option></select>
+          </span>
+        </div>
+
+        <div class="line">
+          <label for="place">te</label>
+          <input class="blank" id="place" maxlength="120" placeholder="emri i kafenesë">
+        </div>
+
+        <div class="line">
+          <label for="note">P.S.</label>
+          <textarea class="blank" id="note" maxlength="300" placeholder="opsionale, p.sh. makiato e madhe"></textarea>
+        </div>
+
+        <button class="send" id="send" type="submit">Konfirmo</button>
+        <p class="err" id="err" role="alert"></p>
+      </form>
+    </section>
+
   </div>
-</section>
+</main>
 
-<!-- 2. Forma -->
-<section class="screen hidden" id="form-screen">
-  <form class="card" id="form" novalidate>
-    <h2>E dija! ☕</h2>
-    <p class="lead">Tani vetëm detajet, që mos me ndodh “harrova”.</p>
+<div class="takeover hidden" id="takeover" role="button" tabindex="0" aria-label="Po">
+  <div><b>Po</b><small>s'ka më opsione</small></div>
+</div>
 
-    <label for="name">Si e ke emrin?</label>
-    <input id="name" name="name" autocomplete="given-name" maxlength="60" placeholder="Emri yt" required>
-
-    <label>Kur?</label>
-    <div class="chips" id="day-chips">
-      <button type="button" class="chip" data-offset="0">Sot</button>
-      <button type="button" class="chip" data-offset="1">Nesër</button>
-      <button type="button" class="chip" data-offset="2">Pasnesër</button>
-      <button type="button" class="chip" data-offset="pick">Datë tjetër</button>
-    </div>
-    <input id="date" type="date" class="hidden" style="margin-top:10px" aria-label="Data">
-    <p class="hint" id="date-hint"></p>
-
-    <label>Në çfarë ore?</label>
-    <div class="row">
-      <div class="select-wrap"><select id="hour" aria-label="Ora"></select></div>
-      <div class="select-wrap"><select id="minute" aria-label="Minutat">
-        <option>00</option><option>15</option><option>30</option><option>45</option>
-      </select></div>
-    </div>
-
-    <label for="place">Ku?</label>
-    <input id="place" name="place" maxlength="120" placeholder="p.sh. kafiteria afër sheshit" required>
-
-    <label for="note">Diçka tjetër? <span style="font-weight:600;color:var(--milk)">(opsionale)</span></label>
-    <textarea id="note" maxlength="300" placeholder="p.sh. unë e dua makiato të madhe"></textarea>
-
-    <button class="confirm" id="confirm" type="submit">Konfirmo ☕</button>
-    <p class="err" id="err" role="alert"></p>
-  </form>
-</section>
-
-<!-- 3. Lulet -->
-<div class="hearts" id="hearts"></div>
-<section class="screen done hidden" id="done">
-  <svg class="bouquet" viewBox="0 0 300 320" aria-hidden="true">
-    <defs>
-      <g id="rose">
-        <circle r="20" fill="#e0475b"/>
-        <path d="M-12 -6a14 14 0 0 1 24 0a10 10 0 0 1-12 12a8 8 0 0 1-6-10" fill="none" stroke="#a51f33" stroke-width="3" stroke-linecap="round"/>
-        <path d="M-5 -1a6 6 0 0 1 10 2" fill="none" stroke="#a51f33" stroke-width="3" stroke-linecap="round"/>
-      </g>
-      <g id="daisy">
-        <g fill="#fff">
-          <ellipse rx="6" ry="14" cy="-12"/><ellipse rx="6" ry="14" cy="-12" transform="rotate(60)"/><ellipse rx="6" ry="14" cy="-12" transform="rotate(120)"/>
-          <ellipse rx="6" ry="14" cy="-12" transform="rotate(180)"/><ellipse rx="6" ry="14" cy="-12" transform="rotate(240)"/><ellipse rx="6" ry="14" cy="-12" transform="rotate(300)"/>
-        </g>
-        <circle r="7" fill="#f2b632"/>
-      </g>
-      <g id="tulip">
-        <path d="M-15 -4c0-14 6-22 15-24c9 2 15 10 15 24c0 12-7 18-15 18s-15-6-15-18z" fill="#f48aa0"/>
-        <path d="M0 -28c-5 8-5 22 0 32c5-10 5-24 0-32z" fill="#e46a85"/>
-      </g>
-    </defs>
-    <!-- kërcejtë -->
-    <g stroke="#4f8a4b" stroke-width="5" stroke-linecap="round" fill="none">
-      <path d="M150 250L95 95"/><path d="M150 250L150 70"/><path d="M150 250L205 95"/>
-      <path d="M150 250L65 145"/><path d="M150 250L235 145"/><path d="M150 250L120 120"/><path d="M150 250L182 120"/>
-    </g>
-    <g fill="#6aa35f">
-      <path d="M118 190c-26-6-38-24-36-36c16 4 32 16 36 36z"/>
-      <path d="M182 190c26-6 38-24 36-36c-16 4-32 16-36 36z"/>
-      <path d="M150 170c-8-20-2-36 8-42c4 16 2 30-8 42z"/>
-    </g>
-    <!-- lulet -->
-    <g transform="translate(65 145)"><g class="flower"><use href="#daisy"/></g></g>
-    <g transform="translate(235 145)"><g class="flower"><use href="#daisy"/></g></g>
-    <g transform="translate(95 95)"><g class="flower"><use href="#tulip"/></g></g>
-    <g transform="translate(205 95)"><g class="flower"><use href="#tulip"/></g></g>
-    <g transform="translate(120 122)"><g class="flower"><use href="#rose"/></g></g>
-    <g transform="translate(182 122)"><g class="flower"><use href="#rose"/></g></g>
-    <g transform="translate(150 70) scale(1.2)"><g class="flower"><use href="#rose"/></g></g>
-    <!-- letra e mbështjelljes -->
-    <path d="M88 200L150 312L212 200L180 214L150 196L120 214z" fill="#f3c6b4"/>
-    <path d="M88 200L150 312L120 214z" fill="#e8ad97"/>
-    <!-- fjongoja -->
-    <g fill="#e0475b">
-      <path d="M150 236c-14-14-34-14-34 0s20 14 34 0z"/>
-      <path d="M150 236c14-14 34-14 34 0s-20 14-34 0z"/>
-      <path d="M146 238l-14 30l10-4l6 8z"/><path d="M154 238l14 30l-10-4l-6 8z"/>
-      <circle cx="150" cy="236" r="7" fill="#b8293d"/>
-    </g>
-  </svg>
-  <h2 id="done-title">U bë! 💐</h2>
-  <p id="done-text">Shihemi atje.</p>
-  <div class="summary" id="summary"></div>
+<section class="done hidden" id="done" aria-live="polite">
+  <img id="bouquet" alt="Një buqetë me trëndafila portokalli dhe karafila të bardhë, e mbështjellë me letër">
+  <p class="note" id="final-note"></p>
+  <span class="credit">Foto: Lizzie / Unsplash</span>
 </section>
 
 <script>
 (() => {
   const $ = (id) => document.getElementById(id);
-  const yes = $("yes"), no = $("no"), sub = $("sub");
+  const yes = $("yes"), no = $("no"), remark = $("remark");
 
   const LINES = [
-    "A je i/e sigurt? 🤨",
-    "Mendoje edhe njëherë…",
-    "Kafja është në llogarinë time!",
-    "Po të marr edhe një kroasan 🥐",
-    "Butoni “Jo” po lodhet. Ti jo?",
-    "Ok, po bëhesh e/i vështirë 😅",
-    "Zemra ime po bën krak 💔",
-    "Ky buton “Jo” sot s'po punon mirë…",
-    "Mami thotë që jam djalë i mirë 🥺",
-    "A e di sa e mirë është makiatoja këtu?",
-    "Po shtyp gabim, besoj.",
-    "Shiko sa i madh u bë “Po”. Shenjë!",
-    "Ok, “Jo” s'pranohet si përgjigje.",
-    "Shansi i fundit… (s'është i fundit)",
+    "Sigurt? Mendoje edhe një herë.",
+    "Kafja është në llogarinë time.",
+    "Po e shtoj edhe një kroasan.",
+    "Ky buton po lodhet. Ti jo?",
+    "Gishti të rrëshqiti, apo?",
+    "Makiatoja atje është shumë e mirë, besomë.",
+    "Po e shkruaj “Po” pak më të madh.",
+    "“Jo” sot s'pranohet si përgjigje.",
   ];
-  const TAKEOVER_AT = 9; // pas kaq “Jo”-ve, “Po” e mbulon ekranin
-  let noCount = 0, lineIdx = 0;
+  const TAKEOVER_AT = LINES.length + 1;
+  let noCount = 0;
+
+  function say(text) {
+    remark.innerHTML = "";
+    const s = document.createElement("span");
+    s.textContent = text;
+    remark.appendChild(s);
+    requestAnimationFrame(() => s.classList.add("write"));
+  }
 
   function moveNo() {
-    const pad = 16;
+    const pad = 14;
     const r = no.getBoundingClientRect();
     const yr = yes.getBoundingClientRect();
-    const W = window.innerWidth, H = window.innerHeight;
-    let x, y, tries = 0;
-    do {
-      x = pad + Math.random() * Math.max(1, W - r.width - pad * 2);
-      y = pad + Math.random() * Math.max(1, H - r.height - pad * 2);
-      tries++;
-    } while (tries < 40 && x < yr.right + 10 && x + r.width > yr.left - 10 && y < yr.bottom + 10 && y + r.height > yr.top - 10);
+    const W = innerWidth, H = innerHeight;
     if (!no.classList.contains("flying")) {
+      // jashtë pecetës së rrotulluar, që "fixed" të matet nga ekrani
+      document.body.appendChild(no);
       no.style.left = r.left + "px"; no.style.top = r.top + "px";
       no.classList.add("flying");
-      no.offsetWidth; // reflow që animacioni të nisë nga vendi i vjetër
+      no.offsetWidth;
     }
+    const nr = no.getBoundingClientRect();
+    let x, y, t = 0;
+    do {
+      x = pad + Math.random() * Math.max(1, W - nr.width - pad * 2);
+      y = pad + Math.random() * Math.max(1, H - nr.height - pad * 2);
+    } while (++t < 50 && x < yr.right + 12 && x + nr.width > yr.left - 12 && y < yr.bottom + 12 && y + nr.height > yr.top - 12);
     no.style.left = x + "px"; no.style.top = y + "px";
-    no.style.transform = `rotate(${(Math.random() * 30 - 15).toFixed(0)}deg)`;
+    no.style.transform = `rotate(${Math.round(Math.random() * 24 - 12)}deg)`;
   }
 
-  no.addEventListener("click", (e) => {
-    e.preventDefault();
+  no.addEventListener("click", () => {
     noCount++;
-    sub.textContent = LINES[lineIdx % LINES.length];
-    lineIdx++;
-    sub.classList.remove("pop"); void sub.offsetWidth; sub.classList.add("pop");
-    if (navigator.vibrate) navigator.vibrate(30);
-
+    if (navigator.vibrate) navigator.vibrate(25);
     if (noCount >= TAKEOVER_AT) {
-      yes.classList.add("takeover");
-      yes.innerHTML = "PO<small>(s'ka më opsione 😌)</small>";
       no.classList.add("hidden");
+      $("takeover").classList.remove("hidden");
       return;
     }
-    const scale = 1 + noCount * 0.45;
-    yes.style.transform = `scale(${scale})`;
+    say(LINES[(noCount - 1) % LINES.length]);
+    yes.style.transform = `scale(${(1 + noCount * 0.32).toFixed(2)})`;
     moveNo();
   });
+  addEventListener("resize", () => { if (no.classList.contains("flying") && !no.classList.contains("hidden")) moveNo(); });
 
-  window.addEventListener("resize", () => { if (no.classList.contains("flying")) moveNo(); });
+  // foto ngarkohet në sfond sa më herët që të jetë gati në fund
+  const photo = new Image();
+  function preload() {
+    if (photo.src) return;
+    photo.src = innerWidth > 760 ? "/buqeta.jpg" : "/buqeta-700.jpg";
+  }
+  no.addEventListener("click", preload, { once: true });
 
-  yes.addEventListener("click", () => {
-    $("ask").classList.add("hidden");
-    $("form-screen").classList.remove("hidden");
-    burst(10);
-    setTimeout(() => $("name").focus({ preventScroll: true }), 350);
-  });
+  function accept() {
+    preload();
+    $("takeover").classList.add("hidden");
+    no.classList.add("hidden");
+    yes.style.transform = "";
+    yes.classList.add("checked");
+    say("E dija.");
+    setTimeout(() => {
+      const nap = $("napkin");
+      nap.classList.add("flipped");
+      $("front").setAttribute("aria-hidden", "true");
+      setTimeout(() => nap.classList.add("half"), 430); // në mes të rrotullimit, kur peceta është anash
+      setTimeout(() => {
+        nap.classList.add("settled");
+        $("name").focus({ preventScroll: true });
+      }, 950);
+    }, 650);
+  }
+  yes.addEventListener("click", accept);
+  $("takeover").addEventListener("click", accept);
+  $("takeover").addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); accept(); } });
 
-  // ---- forma ----
+  // ---------- formulari ----------
   const MONTHS = ["janar","shkurt","mars","prill","maj","qershor","korrik","gusht","shtator","tetor","nëntor","dhjetor"];
   const DAYS = ["e diel","e hënë","e martë","e mërkurë","e enjte","e premte","e shtunë"];
-  const pad2 = (n) => String(n).padStart(2, "0");
-  const iso = (d) => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
-  const nice = (s) => { const [y, m, d] = s.split("-").map(Number); const dt = new Date(y, m - 1, d); return `${DAYS[dt.getDay()]}, ${d} ${MONTHS[m - 1]}`; };
+  const DAYS_ACC = ["të dielën","të hënën","të martën","të mërkurën","të enjten","të premten","të shtunën"];
+  const p2 = (n) => String(n).padStart(2, "0");
+  const iso = (d) => `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}`;
+  const parse = (s) => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
+  const nice = (s) => { const d = parse(s); return `${DAYS[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]}`; };
 
-  let chosenDate = "";
-  const dateInput = $("date"), hint = $("date-hint");
+  let chosen = "", chosenWord = "";
+  const dateInput = $("date");
   dateInput.min = iso(new Date());
 
-  function setDate(s) {
-    chosenDate = s;
-    hint.textContent = s ? "📅 " + nice(s) : "";
+  function setDate(s, word) {
+    chosen = s; chosenWord = word || "";
+    $("when-text").textContent = s ? nice(s) : "";
   }
-  document.querySelectorAll("#day-chips .chip").forEach((chip) => {
-    chip.addEventListener("click", () => {
-      document.querySelectorAll("#day-chips .chip").forEach((c) => c.setAttribute("aria-pressed", "false"));
-      chip.setAttribute("aria-pressed", "true");
-      const off = chip.dataset.offset;
-      if (off === "pick") {
-        dateInput.classList.remove("hidden");
-        setDate(dateInput.value || "");
-        try { dateInput.showPicker(); } catch { dateInput.focus(); }
-      } else {
-        dateInput.classList.add("hidden");
-        const d = new Date(); d.setDate(d.getDate() + Number(off));
-        setDate(iso(d));
-      }
-    });
-  });
+  document.querySelectorAll(".day").forEach((b) => b.addEventListener("click", () => {
+    document.querySelectorAll(".day").forEach((x) => x.setAttribute("aria-pressed", "false"));
+    b.setAttribute("aria-pressed", "true");
+    const off = b.dataset.offset;
+    if (off === "pick") {
+      dateInput.classList.remove("hidden");
+      setDate(dateInput.value || "");
+      try { dateInput.showPicker(); } catch { dateInput.focus(); }
+    } else {
+      dateInput.classList.add("hidden");
+      const d = new Date(); d.setDate(d.getDate() + Number(off));
+      setDate(iso(d), b.textContent.trim());
+    }
+  }));
   dateInput.addEventListener("change", () => setDate(dateInput.value));
 
-  const hourSel = $("hour");
+  const hour = $("hour");
   for (let h = 7; h <= 23; h++) {
     const o = document.createElement("option");
-    o.value = pad2(h); o.textContent = pad2(h);
+    o.value = o.textContent = p2(h);
     if (h === 18) o.selected = true;
-    hourSel.appendChild(o);
+    hour.appendChild(o);
   }
 
   $("form").addEventListener("submit", async (e) => {
@@ -408,57 +467,49 @@
     err.textContent = "";
     const name = $("name").value.trim();
     const place = $("place").value.trim();
-    const time = `${hourSel.value}:${$("minute").value}`;
-    if (!name) { err.textContent = "Si e ke emrin? 🙂"; return $("name").focus(); }
-    if (!chosenDate) { err.textContent = "Zgjidh ditën."; return; }
-    if (chosenDate < iso(new Date())) { err.textContent = "Kjo datë ka kaluar 😄"; return; }
-    if (!place) { err.textContent = "Ku po takohemi?"; return $("place").focus(); }
+    const time = `${hour.value}:${$("minute").value}`;
+    if (!name) { err.textContent = "Shkruaje emrin."; return $("name").focus(); }
+    if (!chosen) { err.textContent = "Zgjidh ditën."; return; }
+    if (chosen < iso(new Date())) { err.textContent = "Kjo ditë ka kaluar. Zgjidh një tjetër."; return; }
+    if (!place) { err.textContent = "Shkruaje vendin."; return $("place").focus(); }
 
-    const btn = $("confirm");
-    btn.disabled = true; btn.textContent = "Po dërgoj…";
+    const btn = $("send");
+    btn.disabled = true; btn.textContent = "Duke dërguar…";
     try {
       const r = await fetch("/api/confirm", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, date: chosenDate, time, place, note: $("note").value.trim(), noCount }),
+        body: JSON.stringify({ name, date: chosen, time, place, note: $("note").value.trim(), noCount }),
       });
       const j = await r.json().catch(() => ({}));
-      if (!r.ok) throw new Error(j.error || "Diçka shkoi keq. Provo prapë.");
-      showDone(name, chosenDate, time, place);
+      if (!r.ok) throw new Error(j.error || "S'u dërgua. Provo prapë.");
+      finish(name, time, place);
     } catch (ex) {
-      err.textContent = ex.message || "S'ka internet? Provo prapë.";
-      btn.disabled = false; btn.textContent = "Konfirmo ☕";
+      err.textContent = ex.message || "S'ka lidhje me internetin. Provo prapë.";
+      btn.disabled = false; btn.textContent = "Konfirmo";
     }
   });
 
-  function esc(s) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+  function finish(name, time, place) {
+    const d = parse(chosen);
+    const when = chosenWord === "sot" || chosenWord === "nesër" || chosenWord === "pasnesër"
+      ? `${chosenWord}, ${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}`
+      : `${DAYS_ACC[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]}`;
+    const note = $("final-note");
+    note.textContent = "";
+    const add = (t, strong) => { const el = document.createElement(strong ? "strong" : "span"); el.textContent = t; note.appendChild(el); };
+    add(`Faleminderit, ${name}.`, true);
+    note.appendChild(document.createElement("br"));
+    add(`Shihemi ${when}, në orën ${time}, te ${place}.`);
+    const sign = document.createElement("span");
+    sign.className = "sign";
+    sign.textContent = "Lulet i sjell unë.";
+    note.appendChild(sign);
 
-  function showDone(name, date, time, place) {
-    $("form-screen").classList.add("hidden");
+    const img = $("bouquet");
+    img.src = photo.src || "/buqeta-700.jpg";
+    $("stage").classList.add("hidden");
     $("done").classList.remove("hidden");
-    $("done-title").textContent = `Faleminderit, ${name}! 💐`;
-    $("done-text").textContent = "Mezi po pres. Kafja e para është gati në kokën time.";
-    $("summary").innerHTML = `📅 ${esc(nice(date))}<br>🕒 ora ${esc(time)}<br>📍 ${esc(place)}`;
-    burst(36);
-    setInterval(() => burst(4), 1400);
-  }
-
-  const HEARTS = ["❤️", "💕", "💖", "💗", "🌸", "💘", "🌷"];
-  function burst(n) {
-    const box = $("hearts");
-    for (let i = 0; i < n; i++) {
-      const h = document.createElement("span");
-      h.className = "heart";
-      h.textContent = HEARTS[Math.floor(Math.random() * HEARTS.length)];
-      h.style.left = Math.random() * 100 + "vw";
-      h.style.fontSize = 16 + Math.random() * 26 + "px";
-      h.style.setProperty("--drift", (Math.random() * 120 - 60).toFixed(0) + "px");
-      h.style.setProperty("--spin", (Math.random() * 80 - 40).toFixed(0) + "deg");
-      h.style.animationDuration = 4 + Math.random() * 4 + "s";
-      h.style.animationDelay = Math.random() * 0.8 + "s";
-      box.appendChild(h);
-      setTimeout(() => h.remove(), 9500);
-    }
   }
 })();
 </script>
