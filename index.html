@@ -324,11 +324,28 @@
     when = new Date(Y, M - 1, D, hh, mm);
     if (when <= new Date()) return err("Ajo kohë ka kaluar. Zgjedh një kohë më vonë.");
     err("");
+    notify();
     renderTicket();
     confetti();
     show("step-done");
   });
   function err(text) { $("error").textContent = text; return false; }
+
+  /* Email me: n8n webhook sends the email. Form-encoded = simple CORS request, no preflight. */
+  const WEBHOOK = "https://n8n.gezimm.com/webhook/kafe-date";
+  function notify() {
+    const body = new URLSearchParams({
+      answer: "Po",
+      date: $("date").value,
+      time: $("time").value,
+      place,
+      dateText: fmtDate(when),
+      triesOnJo: String(tries),
+      sentAt: new Date().toISOString(),
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "",
+    });
+    try { fetch(WEBHOOK, { method: "POST", body, keepalive: true, mode: "no-cors" }).catch(() => {}); } catch {}
+  }
 
   /* ---------- STEP 3: ticket + countdown ---------- */
   let timer = null;

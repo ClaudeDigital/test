@@ -1,0 +1,35 @@
+{
+  "name": "Kafe date → Email",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "kafe-date",
+        "responseMode": "onReceived",
+        "options": { "allowedOrigins": "https://test.gezimm.com" }
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "webhookId": "kafe-date"
+    },
+    {
+      "parameters": {
+        "sendTo": "EMAILI_YT@gmail.com",
+        "subject": "☕ Tha PO! Kafe: {{ $json.body.dateText }}, ora {{ $json.body.time }}",
+        "emailType": "text",
+        "message": "Tha PO për kafe! 🎉\n\nData: {{ $json.body.dateText }} ({{ $json.body.date }})\nOra: {{ $json.body.time }}\nVendi: {{ $json.body.place }}\n\nE provoi butonin Jo {{ $json.body.triesOnJo }} herë 😄\nDërguar më: {{ $json.body.sentAt }} ({{ $json.body.timezone }})",
+        "options": { "appendAttribution": false }
+      },
+      "name": "Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [260, 0]
+    }
+  ],
+  "connections": {
+    "Webhook": { "main": [[{ "node": "Gmail", "type": "main", "index": 0 }]] }
+  },
+  "settings": {}
+}
