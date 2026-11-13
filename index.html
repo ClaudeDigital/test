@@ -1,674 +1,408 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="sq">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kai Voss — Developer</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg: #0a0a0f;
-      --surface: #13131a;
-      --border: #1e1e2e;
-      --accent: #f97316;
-      --accent2: #f5c018;
-      --text: #e2e2f0;
-      --muted: #8888aa;
-    }
-    html { scroll-behavior: smooth; }
-    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
-
-    /* NAV */
-    nav {
-      position: fixed; top: 0; width: 100%; z-index: 100;
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 1.2rem 6%;
-      background: rgba(10,10,15,0.85); backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-    }
-    .logo { font-weight: 700; font-size: 1.2rem; color: var(--accent); letter-spacing: 1px; }
-    .nav-links { display: flex; gap: 2rem; list-style: none; }
-    .nav-links a { color: var(--muted); text-decoration: none; font-size: .9rem; transition: color .2s; }
-    .nav-links a:hover { color: var(--text); }
-
-    /* HERO */
-    #hero {
-      min-height: 100vh;
-      display: flex; align-items: center; justify-content: center;
-      padding: 6rem 6% 4rem;
-      background: radial-gradient(ellipse at 60% 0%, rgba(249,115,22,.18) 0%, transparent 65%),
-                  radial-gradient(ellipse at 20% 80%, rgba(245,192,24,.1) 0%, transparent 60%);
-    }
-    .hero-inner {
-      display: grid; grid-template-columns: 1fr auto; gap: 4rem;
-      align-items: center; max-width: 1000px; width: 100%;
-    }
-    .badge {
-      display: inline-block; margin-bottom: 1.2rem;
-      padding: .35rem 1rem; border-radius: 99px;
-      border: 1px solid var(--accent); color: var(--accent);
-      font-size: .78rem; letter-spacing: 1px; text-transform: uppercase;
-    }
-    h1 { font-size: clamp(2.2rem, 5vw, 3.6rem); font-weight: 800; line-height: 1.15; margin-bottom: 1rem; }
-    h1 span { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .hero-sub { font-size: 1.05rem; color: var(--muted); margin-bottom: 2rem; max-width: 480px; }
-    .cta-group { display: flex; gap: 1rem; flex-wrap: wrap; }
-    .btn { padding: .75rem 1.8rem; border-radius: 8px; font-size: .95rem; cursor: pointer; text-decoration: none; font-weight: 600; transition: all .2s; }
-    .btn-primary { background: var(--accent); color: #fff; border: none; }
-    .btn-primary:hover { filter: brightness(1.15); transform: translateY(-2px); }
-    .btn-outline { border: 1px solid var(--border); color: var(--text); background: transparent; }
-    .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
-
-    /* AVATAR */
-    .hero-avatar { position: relative; flex-shrink: 0; }
-    .avatar-ring {
-      width: 260px; height: 260px; border-radius: 50%;
-      padding: 4px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-    }
-    .avatar-ring img {
-      width: 100%; height: 100%; border-radius: 50%;
-      object-fit: cover; display: block;
-      border: 4px solid var(--bg);
-    }
-    .avatar-badge {
-      position: absolute; bottom: 10px; right: 10px;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 10px; padding: .4rem .8rem;
-      font-size: .78rem; color: var(--text); display: flex; align-items: center; gap: .4rem;
-    }
-    .dot { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; animation: pulse 2s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-
-    /* SECTIONS */
-    section { padding: 5rem 6%; }
-    .section-label { font-size: .78rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); margin-bottom: .4rem; }
-    .section-title { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 700; margin-bottom: 3rem; }
-
-    /* ABOUT */
-    #about { border-top: 1px solid var(--border); }
-    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; max-width: 1000px; }
-    .about-text p { color: var(--muted); margin-bottom: 1rem; }
-    .skills { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1.5rem; }
-    .skill-tag { padding: .3rem .9rem; border-radius: 6px; background: var(--surface); border: 1px solid var(--border); font-size: .8rem; color: var(--muted); }
-    .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
-    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.4rem; text-align: center; }
-    .stat-num { font-size: 2rem; font-weight: 800; color: var(--accent); }
-    .stat-label { font-size: .82rem; color: var(--muted); margin-top: .2rem; }
-
-    /* PROJECTS */
-    #projects { border-top: 1px solid var(--border); background: var(--surface); }
-    .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
-    .project-card {
-      background: var(--bg); border: 1px solid var(--border);
-      border-radius: 14px; overflow: hidden; transition: all .25s;
-      display: flex; flex-direction: column;
-    }
-    .project-card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 20px 40px rgba(249,115,22,.1); }
-    .project-thumb { width: 100%; height: 180px; object-fit: cover; display: block; }
-    .project-body { padding: 1.4rem; display: flex; flex-direction: column; gap: .7rem; flex: 1; }
-    .project-top { display: flex; justify-content: space-between; align-items: center; }
-    .project-icon { font-size: 1.4rem; }
-    .project-links { display: flex; gap: .4rem; }
-    .project-links a { color: var(--muted); font-size: .78rem; text-decoration: none; padding: .2rem .6rem; border: 1px solid var(--border); border-radius: 6px; transition: all .2s; }
-    .project-links a:hover { color: var(--accent); border-color: var(--accent); }
-    .project-card h3 { font-size: 1.05rem; font-weight: 700; }
-    .project-card p { font-size: .86rem; color: var(--muted); flex: 1; }
-    .project-tags { display: flex; flex-wrap: wrap; gap: .4rem; }
-    .project-tags span { font-size: .73rem; padding: .2rem .6rem; background: rgba(249,115,22,.1); color: var(--accent); border-radius: 5px; }
-
-    /* CONTACT */
-    #contact { border-top: 1px solid var(--border); text-align: center; }
-    .contact-box { max-width: 540px; margin: 0 auto; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 3rem; }
-    .contact-box p { color: var(--muted); margin-bottom: 2rem; }
-    .contact-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
-    .contact-link { display: flex; align-items: center; gap: .5rem; padding: .65rem 1.4rem; border-radius: 8px; border: 1px solid var(--border); color: var(--text); text-decoration: none; font-size: .9rem; transition: all .2s; }
-    .contact-link:hover { border-color: var(--accent); color: var(--accent); }
-
-    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--muted); font-size: .85rem; }
-
-    @media (max-width: 800px) {
-      .hero-inner { grid-template-columns: 1fr; text-align: center; }
-      .hero-inner .hero-text .cta-group { justify-content: center; }
-      .hero-inner .hero-text .hero-sub { margin: 0 auto 2rem; }
-      .hero-avatar { display: flex; justify-content: center; order: -1; }
-      .avatar-ring { width: 200px; height: 200px; }
-      .about-grid { grid-template-columns: 1fr; gap: 2rem; }
-    }
-
-    /* SKILLS */
-    #skills { border-top: 1px solid var(--border); }
-    .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem 4rem; max-width: 900px; }
-    .skill-row { display: flex; flex-direction: column; gap: .5rem; }
-    .skill-header { display: flex; justify-content: space-between; align-items: center; }
-    .skill-name { font-size: .92rem; font-weight: 600; color: var(--text); }
-    .skill-pct { font-size: .82rem; font-weight: 700; color: var(--accent); opacity: 0; transition: opacity .4s; }
-    .skill-pct.visible { opacity: 1; }
-    .skill-track {
-      height: 6px; background: var(--border); border-radius: 99px; overflow: hidden;
-    }
-    .skill-bar {
-      height: 100%; border-radius: 99px; width: 0;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-      transition: width .9s cubic-bezier(.4,0,.2,1);
-      box-shadow: 0 0 10px rgba(249,115,22,.5);
-    }
-    @media (max-width: 700px) { .skills-grid { grid-template-columns: 1fr; } }
-
-    /* CONTACT EXPANDED */
-    #contact { border-top: 1px solid var(--border); }
-    .contact-layout { display: grid; grid-template-columns: 1fr 1.4fr; gap: 4rem; max-width: 1000px; align-items: start; }
-    .contact-intro { color: var(--muted); margin-bottom: 2rem; line-height: 1.7; }
-    .contact-detail { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.4rem; }
-    .contact-detail-icon { font-size: 1.2rem; margin-top: .1rem; }
-    .contact-detail-label { font-size: .75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: .15rem; }
-    .contact-detail-value { font-size: .92rem; color: var(--text); }
-    .contact-detail-value a { color: var(--accent); text-decoration: none; }
-    .contact-socials { display: flex; gap: .8rem; flex-wrap: wrap; margin-top: 2rem; }
-    .contact-link { display: flex; align-items: center; gap: .5rem; padding: .55rem 1.1rem; border-radius: 8px; border: 1px solid var(--border); color: var(--text); text-decoration: none; font-size: .85rem; transition: all .2s; }
-    .contact-link:hover { border-color: var(--accent); color: var(--accent); }
-
-    /* FORM */
-    .contact-form { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 2.2rem; display: flex; flex-direction: column; gap: 1.2rem; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
-    .form-group { display: flex; flex-direction: column; gap: .4rem; }
-    .form-group label { font-size: .8rem; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; }
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
-      color: var(--text); font-size: .92rem; padding: .7rem 1rem;
-      font-family: inherit; outline: none; transition: border-color .2s, box-shadow .2s;
-      resize: vertical;
-    }
-    .form-group select { appearance: none; cursor: pointer; }
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(249,115,22,.15);
-    }
-    .form-group input::placeholder,
-    .form-group textarea::placeholder { color: #44445a; }
-    .form-submit { width: 100%; justify-content: center; font-size: 1rem; padding: .9rem; border-radius: 10px; }
-    .form-success { display: none; text-align: center; color: var(--accent); font-weight: 600; font-size: .92rem; padding: .5rem; }
-    .form-success.show { display: block; }
-
-    @media (max-width: 800px) {
-      .contact-layout { grid-template-columns: 1fr; }
-      .form-row { grid-template-columns: 1fr; }
-    }
-
-    /* AUTOMATIONS */
-    #automations { border-top: 1px solid var(--border); }
-    .automations-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5rem; }
-    .auto-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 14px; padding: 1.6rem;
-      display: flex; flex-direction: column; gap: .9rem;
-      transition: all .25s;
-    }
-    .auto-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 16px 40px rgba(249,115,22,.1); }
-    .auto-card.done { border-left: 3px solid #4ade80; }
-    .auto-header { display: flex; justify-content: space-between; align-items: center; }
-    .auto-icon { font-size: 1.8rem; }
-    .auto-status { font-size: .75rem; font-weight: 700; padding: .25rem .75rem; border-radius: 99px; background: rgba(74,222,128,.12); color: #4ade80; border: 1px solid rgba(74,222,128,.3); letter-spacing: .5px; }
-    .auto-card h3 { font-size: 1.05rem; font-weight: 700; margin: 0; }
-    .auto-card p { font-size: .86rem; color: var(--muted); line-height: 1.65; }
-    .auto-card code { background: rgba(249,115,22,.12); color: var(--accent); padding: .1rem .4rem; border-radius: 4px; font-size: .82rem; }
-    .auto-meta { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .5rem; }
-    .auto-meta-row { display: flex; gap: .8rem; font-size: .8rem; }
-    .auto-meta-label { color: var(--muted); min-width: 64px; }
-    .auto-meta-row span:last-child { color: var(--text); }
-
-    /* LIVE STATS BAR */
-    .auto-live-stats {
-      display: flex; gap: .8rem; flex-wrap: wrap;
-      background: rgba(249,115,22,.06); border: 1px solid rgba(249,115,22,.2);
-      border-radius: 10px; padding: .8rem 1rem;
-    }
-    .live-stat { display: flex; flex-direction: column; align-items: center; min-width: 52px; }
-    .live-stat-val { font-size: 1.25rem; font-weight: 800; color: var(--accent); line-height: 1.1; }
-    .live-stat-lbl { font-size: .68rem; color: var(--muted); text-align: center; margin-top: .1rem; }
-    .stats-loading { opacity: .5; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>body{margin:0}[hidden]{display:none!important}</style>
 </head>
 <body>
-
-<nav>
-  <div class="logo">kai.voss</div>
-  <ul class="nav-links">
-    <li><a href="#about">About</a></li>
-    <li><a href="#projects">Projects</a></li>
-    <li><a href="#automations">Automations</a></li><li><a href="#contact">Contact</a></li>
-  </ul>
-</nav>
-
-<!-- HERO -->
-<section id="hero">
-  <div class="hero-inner">
-    <div class="hero-text">
-      <div class="badge">Open to opportunities</div>
-      <h1>Hi, I'm <span>Kai Voss</span></h1>
-      <p class="hero-sub">Backend-leaning full-stack developer. I obsess over clean architecture, fast infrastructure, and things that just work.</p>
-      <div class="cta-group">
-        <a href="#projects" class="btn btn-primary">See my work</a>
-        <a href="#contact" class="btn btn-outline">Say hello</a>
-      </div>
-    </div>
-    <div class="hero-avatar">
-      <div class="avatar-ring">
-        <img src="https://api.dicebear.com/9.x/lorelei/svg?seed=KaiVoss&backgroundColor=1a1a2e&radius=50" alt="Kai Voss avatar" />
-      </div>
-      <div class="avatar-badge"><span class="dot"></span> Available for work</div>
-    </div>
-  </div>
-</section>
-
-<!-- ABOUT -->
-<section id="about">
-  <div class="section-label">About</div>
-  <div class="section-title">Who's behind the terminal</div>
-  <div class="about-grid">
-    <div class="about-text">
-      <p>I'm Kai — a self-taught developer who fell in love with programming at 14 by breaking things on a secondhand laptop. Seven years later, I'm still breaking things, just on purpose now.</p>
-      <p>I spend most of my time building APIs, designing systems that scale, and tinkering with self-hosted infrastructure. I believe great software is invisible — it just works, and works fast.</p>
-      <div class="skills">
-        <span class="skill-tag">TypeScript</span>
-        <span class="skill-tag">Python</span>
-        <span class="skill-tag">Go</span>
-        <span class="skill-tag">React</span>
-        <span class="skill-tag">PostgreSQL</span>
-        <span class="skill-tag">Redis</span>
-        <span class="skill-tag">Docker</span>
-        <span class="skill-tag">Linux</span>
-        <span class="skill-tag">Cloudflare</span>
-        <span class="skill-tag">Proxmox</span>
-        <span class="skill-tag">Nginx</span>
-        <span class="skill-tag">Git</span>
-      </div>
-    </div>
-    <div class="about-stats">
-      <div class="stat-card"><div class="stat-num">7+</div><div class="stat-label">Years Coding</div></div>
-      <div class="stat-card"><div class="stat-num">34</div><div class="stat-label">Projects Shipped</div></div>
-      <div class="stat-card"><div class="stat-num">12</div><div class="stat-label">Happy Clients</div></div>
-      <div class="stat-card"><div class="stat-num">∞</div><div class="stat-label">Tabs Open</div></div>
-    </div>
-  </div>
-</section>
-
-
-<!-- SKILLS -->
-<section id=skills>
-  <div class=section-label>Expertise</div>
-  <div class=section-title>Languages &amp; tools</div>
-  <div class=skills-grid>
-    <div class=skill-row>
-      <div class=skill-header><span class=skill-name>JavaScript</span><span class=skill-pct>90%</span></div>
-      <div class=skill-track><div class=skill-bar data-pct=90></div></div>
-    </div>
-    <div class=skill-row>
-      <div class=skill-header><span class=skill-name>TypeScript</span><span class=skill-pct>85%</span></div>
-      <div class=skill-track><div class=skill-bar data-pct=85></div></div>
-    </div>
-    <div class=skill-row>
-      <div class=skill-header><span class=skill-name>React</span><span class=skill-pct>80%</span></div>
-      <div class=skill-track><div class=skill-bar data-pct=80></div></div>
-    </div>
-    <div class=skill-row>
-      <div class=skill-header><span class=skill-name>Python</span><span class=skill-pct>75%</span></div>
-      <div class=skill-track><div class=skill-bar data-pct=75></div></div>
-    </div>
-    <div class=skill-row>
-      <div class=skill-header><span class=skill-name>Go</span><span class=skill-pct>70%</span></div>
-      <div class=skill-track><div class=skill-bar data-pct=70></div></div>
-    </div>
-    <div class=skill-row>
-      <div class=skill-header><span class=skill-name>PostgreSQL</span><span class=skill-pct>65%</span></div>
-      <div class=skill-track><div class=skill-bar data-pct=65></div></div>
-    </div>
-    <div class=skill-row>
-      <div class=skill-header><span class=skill-name>Docker</span><span class=skill-pct>85%</span></div>
-      <div class=skill-track><div class=skill-bar data-pct=85></div></div>
-    </div>
-    <div class=skill-row>
-      <div class=skill-header><span class=skill-name>Linux</span><span class=skill-pct>90%</span></div>
-      <div class=skill-track><div class=skill-bar data-pct=90></div></div>
-    </div>
-  </div>
-</section>
-
-<!-- PROJECTS -->
-<section id="projects">
-  <div class="section-label">Work</div>
-  <div class="section-title">Things I've built</div>
-  <div class="projects-grid">
-
-    <div class="project-card">
-      <img class="project-thumb" src="https://picsum.photos/seed/orbitly/600/300" alt="Orbitly" />
-      <div class="project-body">
-        <div class="project-top">
-          <div class="project-icon">🛰️</div>
-          <div class="project-links"><a href="#">GitHub</a><a href="#">Live</a></div>
-        </div>
-        <h3>Orbitly</h3>
-        <p>Real-time flight tracking dashboard pulling live ADS-B data. Renders 10k+ aircraft positions on a WebGL map without breaking a sweat.</p>
-        <div class="project-tags"><span>Go</span><span>WebGL</span><span>WebSocket</span><span>Redis</span></div>
-      </div>
-    </div>
-
-    <div class="project-card">
-      <img class="project-thumb" src="https://picsum.photos/seed/vaultkey/600/300" alt="Vaultkey" />
-      <div class="project-body">
-        <div class="project-top">
-          <div class="project-icon">🔐</div>
-          <div class="project-links"><a href="#">GitHub</a><a href="#">Live</a></div>
-        </div>
-        <h3>Vaultkey</h3>
-        <p>Self-hosted password manager with end-to-end encryption, browser extension, and zero-knowledge architecture. Because cloud vaults aren't yours.</p>
-        <div class="project-tags"><span>TypeScript</span><span>React</span><span>AES-256</span><span>SQLite</span></div>
-      </div>
-    </div>
-
-    <div class="project-card">
-      <img class="project-thumb" src="https://picsum.photos/seed/pulsar42/600/300" alt="Pulsar" />
-      <div class="project-body">
-        <div class="project-top">
-          <div class="project-icon">📊</div>
-          <div class="project-links"><a href="#">GitHub</a><a href="#">Live</a></div>
-        </div>
-        <h3>Pulsar</h3>
-        <p>Lightweight server monitoring agent. Streams CPU, RAM, disk, and network metrics to a clean dashboard. No cloud dependency, no telemetry.</p>
-        <div class="project-tags"><span>Python</span><span>InfluxDB</span><span>Grafana</span><span>Docker</span></div>
-      </div>
-    </div>
-
-    <div class="project-card">
-      <img class="project-thumb" src="https://picsum.photos/seed/threadbot/600/300" alt="Threadbot" />
-      <div class="project-body">
-        <div class="project-top">
-          <div class="project-icon">🤖</div>
-          <div class="project-links"><a href="#">GitHub</a><a href="#">Live</a></div>
-        </div>
-        <h3>Threadbot</h3>
-        <p>A Discord bot that summarises long forum threads using an LLM backend. Reduced meeting recaps in a 3k-member server by 80%.</p>
-        <div class="project-tags"><span>Python</span><span>Discord.py</span><span>LLM</span><span>PostgreSQL</span></div>
-      </div>
-    </div>
-
-    <div class="project-card">
-      <img class="project-thumb" src="https://picsum.photos/seed/proxgate/600/300" alt="Proxgate" />
-      <div class="project-body">
-        <div class="project-top">
-          <div class="project-icon">🌐</div>
-          <div class="project-links"><a href="#">GitHub</a><a href="#">Live</a></div>
-        </div>
-        <h3>Proxgate</h3>
-        <p>A web UI for managing Proxmox LXC containers and VMs — spin up, snapshot, and SSH into machines straight from the browser.</p>
-        <div class="project-tags"><span>React</span><span>Node.js</span><span>Proxmox API</span><span>Cloudflare</span></div>
-      </div>
-    </div>
-
-    <div class="project-card">
-      <img class="project-thumb" src="https://picsum.photos/seed/cratelog/600/300" alt="Cratelog" />
-      <div class="project-body">
-        <div class="project-top">
-          <div class="project-icon">📦</div>
-          <div class="project-links"><a href="#">GitHub</a><a href="#">Live</a></div>
-        </div>
-        <h3>Cratelog</h3>
-        <p>A personal package registry and changelog tracker. Pin versions, track breaking changes, and get notified before updates wreck your project.</p>
-        <div class="project-tags"><span>Go</span><span>PostgreSQL</span><span>React</span><span>Docker</span></div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-
-<!-- AUTOMATIONS -->
-<section id="automations">
-  <div class="section-label">Automation</div>
-  <div class="section-title">n8n workflows live in production</div>
-  <div class="automations-grid">
-
-    <div class="auto-card done" id="ac-weather">
-      <div class="auto-header">
-        <div class="auto-icon" id="ac-weather-emoji">🌤️</div>
-        <span class="auto-status">✅ Live</span>
-      </div>
-      <h3>Weather Bot — Prishtina</h3>
-      <p>Fetches real-time weather from Open-Meteo every 30 minutes and pushes a formatted Telegram message with temperature, humidity, wind speed and precipitation.</p>
-      <div class="auto-live-stats" id="ac-weather-stats">
-        <div class="live-stat"><span class="live-stat-val" id="ls-temp">—</span><span class="live-stat-lbl">°C now</span></div>
-        <div class="live-stat"><span class="live-stat-val" id="ls-humidity">—</span><span class="live-stat-lbl">% humidity</span></div>
-        <div class="live-stat"><span class="live-stat-val" id="ls-wind">—</span><span class="live-stat-lbl">km/h wind</span></div>
-        <div class="live-stat"><span class="live-stat-val">48</span><span class="live-stat-lbl">msg/day</span></div>
-      </div>
-      <div class="auto-meta">
-        <div class="auto-meta-row"><span class="auto-meta-label">Trigger</span><span>Every 30 min</span></div>
-        <div class="auto-meta-row"><span class="auto-meta-label">Condition</span><span id="ls-condition">Loading…</span></div>
-        <div class="auto-meta-row"><span class="auto-meta-label">API</span><span>Open-Meteo (free, no key)</span></div>
-      </div>
-      <div class="project-tags" style="margin-top:.8rem"><span>n8n</span><span>Telegram</span><span>Open-Meteo</span><span>Schedule</span></div>
-    </div>
-
-    <div class="auto-card done" id="ac-quote">
-      <div class="auto-header">
-        <div class="auto-icon">💬</div>
-        <span class="auto-status">✅ Live</span>
-      </div>
-      <h3>Hourly Quotes Bot</h3>
-      <p>Pulls a random motivational quote from ZenQuotes every hour and delivers it to Telegram with the local time stamp. Also triggered on-demand via the <code>/quote</code> command.</p>
-      <div class="auto-live-stats">
-        <div class="live-stat"><span class="live-stat-val">24</span><span class="live-stat-lbl">msg/day</span></div>
-        <div class="live-stat"><span class="live-stat-val" id="ls-qauthor">—</span><span class="live-stat-lbl">today's author</span></div>
-      </div>
-      <div class="auto-meta">
-        <div class="auto-meta-row"><span class="auto-meta-label">Today's quote</span></div>
-        <div class="auto-meta-row" style="font-style:italic;color:var(--text)" id="ls-qtext">"Loading quote…"</div>
-      </div>
-      <div class="project-tags" style="margin-top:.8rem"><span>n8n</span><span>Telegram</span><span>ZenQuotes</span><span>Webhook</span></div>
-    </div>
-
-    <div class="auto-card done" id="ac-claude">
-      <div class="auto-header">
-        <div class="auto-icon">🤖</div>
-        <span class="auto-status">✅ Live</span>
-      </div>
-      <h3>Claude Pro Renewal Reminder</h3>
-      <p>Every day at 20:00 sends a progressively funnier Telegram reminder counting down to the monthly Claude Pro subscription renewal on the 28th. Severity escalates as the date approaches — full panic mode on day zero.</p>
-      <div class="auto-live-stats">
-        <div class="live-stat"><span class="live-stat-val" id="ls-days">—</span><span class="live-stat-lbl">days left</span></div>
-        <div class="live-stat"><span class="live-stat-val" id="ls-hours">—</span><span class="live-stat-lbl">hours left</span></div>
-        <div class="live-stat"><span class="live-stat-val">1</span><span class="live-stat-lbl">reminder/day</span></div>
-      </div>
-      <div class="auto-meta">
-        <div class="auto-meta-row"><span class="auto-meta-label">Trigger</span><span>Daily 20:00 + /proplansub</span></div>
-        <div class="auto-meta-row"><span class="auto-meta-label">Next renewal</span><span id="ls-renewal">Loading…</span></div>
-        <div class="auto-meta-row"><span class="auto-meta-label">Logic</span><span>Dynamic tone (calm → MAYDAY)</span></div>
-      </div>
-      <div class="project-tags" style="margin-top:.8rem"><span>n8n</span><span>Telegram</span><span>Cron</span><span>JavaScript</span></div>
-    </div>
-
-    <div class="auto-card done" id="ac-prox">
-      <div class="auto-header">
-        <div class="auto-icon">🖥️</div>
-        <span class="auto-status">✅ Live</span>
-      </div>
-      <h3>Proxmox Status Bot</h3>
-      <p>Telegram bot that responds to <code>/proxmox</code> with a live report of every LXC container — status (running / stopped), current IP fetched in real time from the Proxmox API, and the public subdomain pulled from Cloudflare DNS.</p>
-      <div class="auto-live-stats">
-        <div class="live-stat"><span class="live-stat-val" id="ls-total">—</span><span class="live-stat-lbl">containers</span></div>
-        <div class="live-stat"><span class="live-stat-val" id="ls-running">—</span><span class="live-stat-lbl">running 🟢</span></div>
-        <div class="live-stat"><span class="live-stat-val" id="ls-stopped">—</span><span class="live-stat-lbl">stopped 🔴</span></div>
-      </div>
-      <div class="auto-meta">
-        <div class="auto-meta-row"><span class="auto-meta-label">Trigger</span><span>/proxmox command</span></div>
-        <div class="auto-meta-row"><span class="auto-meta-label">APIs</span><span>Proxmox API + Cloudflare API</span></div>
-        <div class="auto-meta-row"><span class="auto-meta-label">Output</span><span>Live Telegram report</span></div>
-      </div>
-      <div class="project-tags" style="margin-top:.8rem"><span>n8n</span><span>Proxmox</span><span>Cloudflare</span><span>Telegram</span></div>
-    </div>
-
-  </div>
-</section>
-
-<!-- CONTACT -->
-<section id="contact">
-  <div class="section-label">Contact</div>
-  <div class="section-title">Let's build something</div>
-  <div class="contact-layout">
-    <div class="contact-info">
-      <p class="contact-intro">Got a project in mind, a role to fill, or just want to geek out about infrastructure? I'm all ears.</p>
-      <div class="contact-detail">
-        <span class="contact-detail-icon">✉️</span>
-        <div>
-          <div class="contact-detail-label">Email</div>
-          <a href="mailto:kai@voss.dev" class="contact-detail-value">kai@voss.dev</a>
-        </div>
-      </div>
-      <div class="contact-detail">
-        <span class="contact-detail-icon">⏱️</span>
-        <div>
-          <div class="contact-detail-label">Response time</div>
-          <div class="contact-detail-value">Within 24 hours</div>
-        </div>
-      </div>
-      <div class="contact-detail">
-        <span class="contact-detail-icon">🌍</span>
-        <div>
-          <div class="contact-detail-label">Timezone</div>
-          <div class="contact-detail-value">CET (UTC+1) — flexible</div>
-        </div>
-      </div>
-      <div class="contact-detail">
-        <span class="contact-detail-icon">💼</span>
-        <div>
-          <div class="contact-detail-label">Open to</div>
-          <div class="contact-detail-value">Freelance · Full-time · Consulting</div>
-        </div>
-      </div>
-      <div class="contact-socials">
-        <a href="#" class="contact-link">🐙 GitHub</a>
-        <a href="#" class="contact-link">💼 LinkedIn</a>
-        <a href="#" class="contact-link">🐦 Twitter</a>
-      </div>
-    </div>
-    <form class="contact-form" onsubmit="handleSubmit(event)">
-      <div class="form-row">
-        <div class="form-group">
-          <label for="fname">Your name</label>
-          <input type="text" id="fname" placeholder="Jane Smith" required />
-        </div>
-        <div class="form-group">
-          <label for="femail">Email address</label>
-          <input type="email" id="femail" placeholder="jane@company.com" required />
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="fsubject">What's this about?</label>
-        <select id="fsubject">
-          <option value="">Select a topic…</option>
-          <option>Freelance / Contract work</option>
-          <option>Full-time opportunity</option>
-          <option>Open source collaboration</option>
-          <option>Technical consulting</option>
-          <option>Just saying hi</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="fbudget">Budget range (optional)</label>
-        <select id="fbudget">
-          <option value="">Prefer not to say</option>
-          <option>Under $1k</option>
-          <option>$1k – $5k</option>
-          <option>$5k – $15k</option>
-          <option>$15k – $50k</option>
-          <option>$50k+</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="fmessage">Message</label>
-        <textarea id="fmessage" rows="5" placeholder="Tell me about your project, timeline, and what you're looking for…" required></textarea>
-      </div>
-      <button type="submit" class="btn btn-primary form-submit">Send message →</button>
-      <div class="form-success" id="formSuccess">Message sent! I'll be in touch soon. 🔥</div>
-    </form>
-  </div>
-</section>
-
-<footer>Designed &amp; built by Kai Voss &mdash; &copy; 2026</footer>
-
-
-<script>
-  const bars = document.querySelectorAll('.skill-bar');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const bar = entry.target;
-        const pct = bar.dataset.pct;
-        bar.style.width = pct + '%';
-        const label = bar.closest('.skill-row').querySelector('.skill-pct');
-        if (label) label.classList.add('visible');
-        observer.unobserve(bar);
-      }
-    });
-  }, { threshold: 0.3 });
-  bars.forEach(b => observer.observe(b));
-</script>
-
-<script>
-  function handleSubmit(e) {
-    e.preventDefault();
-    document.getElementById('formSuccess').classList.add('show');
-    e.target.querySelector('.form-submit').disabled = true;
-    e.target.querySelector('.form-submit').textContent = 'Sent!';
+<title>A po pijmë një kafe?</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+  /* Layout: one centered "card" scene per step; the Jo button breaks out to position:fixed and runs around the whole screen. Single warm look on purpose. */
+  :root {
+    --bg: #ffd8e4;          /* strawberry milk */
+    --bg-2: #ffc2d4;
+    --ink: #3b1f14;         /* espresso */
+    --ink-soft: #7a4a38;
+    --po: #e8304a;          /* cherry */
+    --po-ink: #fff6f2;
+    --jo: #fff6f2;
+    --card: #fff6f2;
+    --line: #3b1f14;
+    --font-display: "Bricolage Grotesque", "Arial Rounded MT Bold", system-ui, sans-serif;
+    --font-body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    color-scheme: light;
   }
-</script>
+  html, body { height: 100%; }
+  body {
+    background: radial-gradient(circle at 20% 15%, var(--bg-2) 0 18%, transparent 19%),
+                radial-gradient(circle at 85% 80%, var(--bg-2) 0 14%, transparent 15%),
+                var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 16px;
+    overflow-x: hidden;
+  }
+  .stage {
+    min-height: 100%;
+    display: grid;
+    place-items: center;
+    padding-block: 32px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    box-sizing: border-box;
+  }
+  .card {
+    width: 100%;
+    max-width: 460px;
+    background: var(--card);
+    border: 3px solid var(--line);
+    border-radius: 28px;
+    box-shadow: 8px 8px 0 var(--line);
+    padding: 32px 24px;
+    box-sizing: border-box;
+    display: grid;
+    gap: 20px;
+    text-align: center;
+  }
+  h1, h2 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    margin: 0;
+    text-wrap: balance;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+  }
+  h1 { font-size: clamp(2.1rem, 8vw, 2.9rem); }
+  h2 { font-size: clamp(1.6rem, 6vw, 2.1rem); }
+  p { margin: 0; color: var(--ink-soft); line-height: 1.5; }
+  .eyebrow {
+    font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--po);
+  }
+
+  /* Cup */
+  .cup { width: 132px; height: 120px; margin: 0 auto; position: relative; }
+  .cup svg { width: 100%; height: 100%; overflow: visible; }
+  .steam path { animation: steam 2.6s ease-in-out infinite; transform-origin: center; }
+  .steam path:nth-child(2) { animation-delay: .5s; }
+  .steam path:nth-child(3) { animation-delay: 1s; }
+  @keyframes steam { 0%,100% { opacity: .15; transform: translateY(4px); } 50% { opacity: .9; transform: translateY(-4px); } }
+
+  /* Buttons */
+  .choices { display: flex; justify-content: center; align-items: center; gap: 16px; min-height: 64px; flex-wrap: wrap; }
+  button { font: inherit; cursor: pointer; }
+  .btn {
+    font-family: var(--font-display);
+    font-weight: 800;
+    border: 3px solid var(--line);
+    border-radius: 999px;
+    padding: 12px 30px;
+    font-size: 1.25rem;
+    box-shadow: 4px 4px 0 var(--line);
+    transition: transform .12s ease, box-shadow .12s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn:active { transform: translate(3px,3px); box-shadow: 1px 1px 0 var(--line); }
+  .btn:focus-visible { outline: 3px dashed var(--po); outline-offset: 4px; }
+  .btn-po { background: var(--po); color: var(--po-ink); font-size: calc(1.25rem * var(--grow, 1)); padding: calc(12px * var(--grow,1)) calc(30px * var(--grow,1)); transition: font-size .25s cubic-bezier(.3,1.6,.5,1), padding .25s cubic-bezier(.3,1.6,.5,1); }
+  .btn-jo { background: var(--jo); color: var(--ink); white-space: nowrap; touch-action: none; }
+  .btn-jo.loose { position: fixed; z-index: 50; transition: left .28s cubic-bezier(.3,1.4,.5,1), top .28s cubic-bezier(.3,1.4,.5,1); }
+  .tease { min-height: 1.5em; font-weight: 500; color: var(--ink); }
+
+  /* Form */
+  form { display: grid; gap: 16px; text-align: left; }
+  .field { display: grid; gap: 6px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .row > * { min-width: 0; }
+  label { font-size: .78rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); }
+  input {
+    font: inherit; font-size: 1.05rem; color: var(--ink);
+    background: #fff; border: 2.5px solid var(--line); border-radius: 14px;
+    padding: 12px 14px; width: 100%; box-sizing: border-box; min-width: 0;
+  }
+  input:focus-visible { outline: 3px solid var(--po); outline-offset: 1px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    border: 2px solid var(--line); background: var(--bg); color: var(--ink);
+    border-radius: 999px; padding: 6px 12px; font-size: .9rem; font-weight: 500;
+  }
+  .chip:hover, .chip[aria-pressed="true"] { background: var(--po); color: var(--po-ink); }
+  .error { color: var(--po); font-weight: 700; font-size: .92rem; min-height: 1.2em; margin: 0; }
+  .btn-wide { width: 100%; }
+
+  /* Ticket */
+  .ticket { display: grid; gap: 4px; border: 2.5px dashed var(--line); border-radius: 18px; padding: 16px; background: var(--bg); }
+  .ticket .big { font-family: var(--font-display); font-weight: 800; font-size: 1.35rem; color: var(--ink); text-transform: capitalize; }
+  .countdown { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .unit { border: 2.5px solid var(--line); border-radius: 14px; padding: 10px 4px; background: #fff; }
+  .unit b { display: block; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.4rem, 6vw, 1.9rem); font-variant-numeric: tabular-nums; }
+  .unit span { font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); }
+  .actions { display: grid; gap: 10px; }
+  .btn-ghost { background: var(--card); color: var(--ink); font-size: 1rem; }
+  a.btn { text-decoration: none; display: block; }
+  .msg { font-size: .9rem; background: #fff; border: 2px solid var(--line); border-radius: 12px; padding: 10px 12px; text-align: left; color: var(--ink); user-select: all; white-space: pre-wrap; }
+  .link-btn { background: none; border: none; color: var(--ink-soft); text-decoration: underline; font-size: .92rem; padding: 4px; }
+
+  #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 60; width: 100%; height: 100%; }
+  .pop { animation: pop .45s cubic-bezier(.3,1.5,.5,1); }
+  @keyframes pop { from { transform: scale(.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+  @media (max-width: 380px) { .row { grid-template-columns: 1fr; } }
+</style>
+
+<canvas id="confetti" aria-hidden="true"></canvas>
+
+<main class="stage">
+  <!-- STEP 1: the question -->
+  <section class="card pop" id="step-ask">
+    <div class="cup" aria-hidden="true">
+      <svg viewBox="0 0 132 120">
+        <g class="steam" fill="none" stroke="#3b1f14" stroke-width="4" stroke-linecap="round">
+          <path d="M40 30 q-8 -10 0 -20 q8 -10 0 -20"/>
+          <path d="M62 30 q-8 -10 0 -20 q8 -10 0 -20"/>
+          <path d="M84 30 q-8 -10 0 -20 q8 -10 0 -20"/>
+        </g>
+        <path d="M104 52 h8 a14 14 0 0 1 0 28 h-10" fill="none" stroke="#3b1f14" stroke-width="5"/>
+        <path d="M16 40 h92 v34 a40 40 0 0 1 -40 40 h-12 a40 40 0 0 1 -40 -40 z" fill="#e8304a" stroke="#3b1f14" stroke-width="5" stroke-linejoin="round"/>
+        <path d="M44 72 c0 -8 10 -12 14 -4 c4 -8 14 -4 14 4 c0 8 -14 16 -14 16 s-14 -8 -14 -16z" fill="#fff6f2"/>
+      </svg>
+    </div>
+    <div>
+      <p class="eyebrow">Ftesë zyrtare</p>
+    </div>
+    <h1>A po pijmë një kafe?</h1>
+    <p class="tease" id="tease" aria-live="polite">Zgjedh me kujdes.</p>
+    <div class="choices">
+      <button class="btn btn-po" id="po" type="button">Po</button>
+      <button class="btn btn-jo" id="jo" type="button">Jo</button>
+    </div>
+  </section>
+
+  <!-- STEP 2: pick when & where -->
+  <section class="card pop" id="step-plan" hidden>
+    <p class="eyebrow">E dija! 🎉</p>
+    <h2>Kur dhe ku?</h2>
+    <p>Zgjedh ditën, orën dhe vendin. Unë vij me qejf.</p>
+    <form id="plan" novalidate>
+      <div class="row">
+        <div class="field">
+          <label for="date">Data</label>
+          <input type="date" id="date" required>
+        </div>
+        <div class="field">
+          <label for="time">Ora</label>
+          <input type="time" id="time" value="18:00" required>
+        </div>
+      </div>
+      <div class="field">
+        <label for="place">Vendi</label>
+        <input type="text" id="place" placeholder="p.sh. te kafja në qendër" maxlength="80" required>
+        <div class="chips" id="chips">
+          <button type="button" class="chip">Te kafja jote e preferuar</button>
+          <button type="button" class="chip">Në qendër</button>
+          <button type="button" class="chip">Diku me pamje</button>
+          <button type="button" class="chip">Surprizë 😏</button>
+        </div>
+      </div>
+      <p class="error" id="error" role="alert"></p>
+      <button class="btn btn-po btn-wide" type="submit">E lamë ☕</button>
+    </form>
+  </section>
+
+  <!-- STEP 3: the date + timer -->
+  <section class="card pop" id="step-done" hidden>
+    <p class="eyebrow">Takim i konfirmuar</p>
+    <h2>Shihemi atëherë!</h2>
+    <div class="ticket">
+      <span class="big" id="t-date"></span>
+      <span><b id="t-time"></b> · <span id="t-place"></span></span>
+    </div>
+    <div class="countdown" aria-live="off">
+      <div class="unit"><b id="cd-d">0</b><span>ditë</span></div>
+      <div class="unit"><b id="cd-h">00</b><span>orë</span></div>
+      <div class="unit"><b id="cd-m">00</b><span>min</span></div>
+      <div class="unit"><b id="cd-s">00</b><span>sek</span></div>
+    </div>
+    <p id="cd-note">Deri në kafe.</p>
+    <div class="msg" id="msg"></div>
+    <div class="actions">
+      <a class="btn btn-po" id="wa" href="#" target="_blank" rel="noopener">Dërgoje në WhatsApp</a>
+      <button class="btn btn-ghost" id="copy" type="button">Kopjo mesazhin</button>
+      <button class="link-btn" id="edit" type="button">Ndrysho datën ose vendin</button>
+    </div>
+  </section>
+</main>
 
 <script>
-(async function loadLiveStats() {
-  try {
-    const res = await fetch('https://n8n.gezimm.com/webhook/stats');
-    if (!res.ok) return;
-    const d = await res.json();
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const po = $("po"), jo = $("jo"), tease = $("tease");
 
-    // Weather
-    if (d.weather) {
-      const set = (id, v) => { const el = document.getElementById(id); if(el) el.textContent = v; };
-      set('ac-weather-emoji', d.weather.emoji);
-      set('ls-temp', d.weather.temp);
-      set('ls-humidity', d.weather.humidity);
-      set('ls-wind', d.weather.wind);
-      set('ls-condition', d.weather.emoji + ' ' + d.weather.condition + ' — feels like ' + d.weather.feels + '°C');
+  /* ---------- STEP 1: the runaway "Jo" ---------- */
+  const lines = [
+    "Hmm, sigurt?",
+    "Mendohu edhe një herë.",
+    "Butoni Jo nuk punon sot.",
+    "Po shoh që po rritet Po-ja…",
+    "Kafja është falas, s'ke arsye.",
+    "Jo-ja ka ikë me pushime.",
+    "Ok, tash vetëm Po ka mbet.",
+    "Ti e di që do të thuash Po 😄",
+  ];
+  const joLabels = ["Jo", "Sigurt?", "Jo 🥲", "Hmm…", "Kurrë?", "Prit…", "Jo?"];
+  let tries = 0;
+
+  function overlapsPo(x, y, w, h) {
+    const r = po.getBoundingClientRect(), pad = 16;
+    return !(x + w < r.left - pad || x > r.right + pad || y + h < r.top - pad || y > r.bottom + pad);
+  }
+
+  function runAway(e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    tries++;
+    tease.textContent = lines[Math.min(tries - 1, lines.length - 1)];
+    jo.textContent = joLabels[tries % joLabels.length];
+    po.style.setProperty("--grow", Math.min(1 + tries * 0.22, 3.4).toFixed(2));
+
+    const rect = jo.getBoundingClientRect();
+    if (!jo.classList.contains("loose")) {
+      jo.style.left = rect.left + "px";
+      jo.style.top = rect.top + "px";
+      jo.classList.add("loose");
+      void jo.offsetWidth; // commit start position so the jump animates
     }
+    const w = jo.offsetWidth, h = jo.offsetHeight;
+    const vw = window.innerWidth, vh = window.innerHeight, m = 16;
+    let x, y, n = 0;
+    do {
+      x = m + Math.random() * Math.max(0, vw - w - 2 * m);
+      y = m + Math.random() * Math.max(0, vh - h - 2 * m);
+      n++;
+    } while ((overlapsPo(x, y, w, h) || Math.hypot(x - rect.left, y - rect.top) < 90) && n < 40);
+    jo.style.left = x + "px";
+    jo.style.top = y + "px";
+  }
 
-    // Quote
-    if (d.quote) {
-      const el = document.getElementById('ls-qtext');
-      if (el) el.textContent = '"' + d.quote.text + '"';
-      const ea = document.getElementById('ls-qauthor');
-      if (ea) ea.textContent = d.quote.author;
+  // Mouse: dodge before it can be clicked. Touch/pen/keyboard: dodge on press.
+  jo.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") runAway(e); });
+  jo.addEventListener("pointerdown", runAway);
+  jo.addEventListener("click", runAway);
+  jo.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") runAway(e); });
+  window.addEventListener("resize", () => {
+    if (!jo.classList.contains("loose")) return;
+    const r = jo.getBoundingClientRect();
+    if (r.right > innerWidth || r.bottom > innerHeight) runAway();
+  });
+
+  po.addEventListener("click", () => {
+    confetti();
+    jo.hidden = true;
+    show("step-plan");
+    $("date").focus({ preventScroll: true });
+  });
+
+  /* ---------- STEP 2: plan ---------- */
+  const pad = (n) => String(n).padStart(2, "0");
+  const toISODate = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const today = new Date();
+  const tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+  $("date").min = toISODate(today);
+  $("date").value = toISODate(tomorrow);
+
+  $("chips").addEventListener("click", (e) => {
+    const chip = e.target.closest(".chip");
+    if (!chip) return;
+    $("place").value = chip.textContent.trim();
+    [...$("chips").children].forEach((c) => c.setAttribute("aria-pressed", String(c === chip)));
+  });
+
+  let when = null, place = "";
+  $("plan").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const d = $("date").value, t = $("time").value;
+    place = $("place").value.trim();
+    if (!d || !t) return err("Zgjedh datën dhe orën.");
+    if (!place) return err("Shkruaj vendin ku takohemi.");
+    const [Y, M, D] = d.split("-").map(Number), [hh, mm] = t.split(":").map(Number);
+    when = new Date(Y, M - 1, D, hh, mm);
+    if (when <= new Date()) return err("Ajo kohë ka kaluar. Zgjedh një kohë më vonë.");
+    err("");
+    renderTicket();
+    confetti();
+    show("step-done");
+  });
+  function err(text) { $("error").textContent = text; return false; }
+
+  /* ---------- STEP 3: ticket + countdown ---------- */
+  let timer = null;
+  function fmtDate(d) {
+    try { return d.toLocaleDateString("sq-AL", { weekday: "long", day: "numeric", month: "long" }); }
+    catch { return d.toDateString(); }
+  }
+  function renderTicket() {
+    const dateText = fmtDate(when);
+    const timeText = `ora ${pad(when.getHours())}:${pad(when.getMinutes())}`;
+    $("t-date").textContent = dateText;
+    $("t-time").textContent = timeText;
+    $("t-place").textContent = place;
+    const text = `Po! ☕ E lamë për kafe: ${dateText}, ${timeText}, ${place}. Shihemi!`;
+    $("msg").textContent = text;
+    $("wa").href = "https://wa.me/?text=" + encodeURIComponent(text);
+    clearInterval(timer);
+    tick();
+    timer = setInterval(tick, 1000);
+  }
+  function tick() {
+    let s = Math.max(0, Math.floor((when - new Date()) / 1000));
+    if (s === 0) { $("cd-note").textContent = "Ka ardhë koha. Kafja të pret! ☕"; clearInterval(timer); }
+    $("cd-d").textContent = Math.floor(s / 86400); s %= 86400;
+    $("cd-h").textContent = pad(Math.floor(s / 3600)); s %= 3600;
+    $("cd-m").textContent = pad(Math.floor(s / 60));
+    $("cd-s").textContent = pad(s % 60);
+  }
+  $("copy").addEventListener("click", () => {
+    const text = $("msg").textContent, btn = $("copy");
+    const done = () => { btn.textContent = "U kopjua ✓"; setTimeout(() => (btn.textContent = "Kopjo mesazhin"), 1800); };
+    const fallback = () => {
+      const r = document.createRange(); r.selectNodeContents($("msg"));
+      const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      btn.textContent = "Mesazhi u zgjodh, kopjoje vetë";
+    };
+    try { navigator.clipboard.writeText(text).then(done, fallback); } catch { fallback(); }
+  });
+  $("edit").addEventListener("click", () => { clearInterval(timer); show("step-plan"); });
+
+  function show(id) {
+    ["step-ask", "step-plan", "step-done"].forEach((s) => ($(s).hidden = s !== id));
+    const el = $(id); el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop");
+    window.scrollTo({ top: 0 });
+  }
+
+  /* ---------- confetti ---------- */
+  const cv = $("confetti"), ctx = cv.getContext("2d");
+  let bits = [], raf = null;
+  function confetti() {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const dpr = devicePixelRatio || 1;
+    cv.width = innerWidth * dpr; cv.height = innerHeight * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const colors = ["#e8304a", "#3b1f14", "#fff6f2", "#ff8fab", "#c98a5a"];
+    for (let i = 0; i < 140; i++) bits.push({
+      x: innerWidth / 2 + (Math.random() - .5) * 120, y: innerHeight * .45,
+      vx: (Math.random() - .5) * 12, vy: -Math.random() * 13 - 4,
+      r: Math.random() * 6 + 4, a: Math.random() * 6, va: (Math.random() - .5) * .3,
+      c: colors[i % colors.length], life: 0,
+    });
+    if (!raf) loop();
+  }
+  function loop() {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    bits = bits.filter((b) => b.life < 180 && b.y < innerHeight + 20);
+    for (const b of bits) {
+      b.vy += .32; b.vx *= .99; b.x += b.vx; b.y += b.vy; b.a += b.va; b.life++;
+      ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(b.a);
+      ctx.fillStyle = b.c; ctx.fillRect(-b.r / 2, -b.r / 4, b.r, b.r / 2);
+      ctx.restore();
     }
-
-    // Claude renewal
-    if (d.claude) {
-      const set = (id, v) => { const el = document.getElementById(id); if(el) el.textContent = v; };
-      set('ls-days', d.claude.daysLeft);
-      set('ls-hours', d.claude.hoursLeft);
-      set('ls-renewal', d.claude.renewalDate);
-    }
-
-    // Proxmox
-    if (d.proxmox) {
-      const set = (id, v) => { const el = document.getElementById(id); if(el) el.textContent = v; };
-      set('ls-total', d.proxmox.total);
-      set('ls-running', d.proxmox.running);
-      set('ls-stopped', d.proxmox.stopped);
-    }
-
-  } catch(e) { console.warn('Stats fetch failed', e); }
+    raf = bits.length ? requestAnimationFrame(loop) : (ctx.clearRect(0, 0, innerWidth, innerHeight), null);
+  }
 })();
 </script>
 
