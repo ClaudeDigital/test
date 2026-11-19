@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="sq">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Statistikat</title>
+<meta name="theme-color" content="#18221c">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%2318221c'/><path d='M16 26h28v10c0 9-6 14-14 14s-14-5-14-14z' fill='none' stroke='%23f4efe6' stroke-width='4' stroke-linejoin='round'/><path d='M44 30h3a5 5 0 0 1 0 10h-4' fill='none' stroke='%23f4efe6' stroke-width='4' stroke-linecap='round'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Hanken+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --table: #18221c;
+    --napkin: #f6f2ea;
+    --line: #e4dccd;
+    --ink: #1f3c8f;
+    --text: #1d2420;
+    --muted: #6b7068;
+    --po: #1f7a4d;
+    --jo: #a3321f;
+    --hand: "Kalam", cursive;
+    --ui: "Hanken Grotesk", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--ui); background: var(--table); color: var(--text); min-height: 100dvh; padding: 20px 16px 40px; }
+  button { font: inherit; cursor: pointer; }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  .card { background: var(--napkin); border-radius: 8px; padding: 22px 20px; box-shadow: 0 20px 40px -20px rgba(0,0,0,.6); }
+  h1 { font-family: var(--hand); color: var(--ink); font-size: 34px; line-height: 1; }
+  .hidden { display: none !important; }
+
+  /* hyrja */
+  .login { max-width: 360px; margin: 12vh auto 0; }
+  .login h1 { margin-bottom: 18px; }
+  .login label { display: block; font-size: 14px; font-weight: 600; color: var(--muted); margin-top: 12px; }
+  .login input { width: 100%; font: inherit; font-size: 17px; padding: 10px 12px; margin-top: 4px; border: 1.5px solid var(--line); border-radius: 6px; background: #fff; }
+  .login input:focus { outline: none; border-color: var(--ink); }
+  .btn { background: var(--ink); color: var(--napkin); border: 0; border-radius: 6px; padding: 12px 16px; font-weight: 600; }
+  .login .btn { width: 100%; margin-top: 18px; font-size: 17px; }
+  .err { color: var(--jo); font-size: 14px; font-weight: 600; min-height: 1.3em; margin-top: 10px; }
+
+  /* paneli */
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; color: var(--napkin); }
+  .top h1 { color: var(--napkin); }
+  .top .links { display: flex; gap: 14px; font-size: 14px; }
+  .top .links button { background: none; border: 0; color: var(--napkin); opacity: .75; text-decoration: underline; text-underline-offset: 3px; }
+  .live { font-size: 13px; opacity: .7; }
+
+  .totals { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .tot { background: var(--napkin); border-radius: 8px; padding: 14px 14px 12px; }
+  .tot b { display: block; font-size: 30px; line-height: 1.05; font-variant-numeric: tabular-nums; }
+  .tot span { font-size: 13px; color: var(--muted); }
+  .tot.po b { color: var(--po); }
+  .tot.jo b { color: var(--jo); }
+  @media (max-width: 520px) { .totals { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+  .last { margin: 12px 0 18px; color: var(--napkin); font-size: 15px; opacity: .85; }
+
+  .visit { background: var(--napkin); border-radius: 8px; margin-bottom: 8px; overflow: hidden; }
+  .visit summary { list-style: none; cursor: pointer; padding: 14px 16px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; }
+  .visit summary::-webkit-details-marker { display: none; }
+  .when { font-weight: 700; font-size: 16px; }
+  .dev { font-size: 13px; color: var(--muted); grid-column: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .counts { grid-row: 1 / span 2; grid-column: 2; display: flex; gap: 8px; align-items: center; font-variant-numeric: tabular-nums; }
+  .pill { font-size: 14px; font-weight: 700; padding: 4px 9px; border-radius: 99px; background: #fff; border: 1.5px solid var(--line); }
+  .pill.po { color: var(--po); }
+  .pill.jo { color: var(--jo); }
+  .dur { font-size: 13px; color: var(--muted); min-width: 52px; text-align: right; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; margin-left: 6px; vertical-align: 2px; }
+  .tag.now { background: var(--po); color: #fff; }
+  .tag.me { background: var(--muted); color: #fff; }
+  .tag.again { background: var(--ink); color: #fff; }
+  .detail { border-top: 1px solid var(--line); padding: 12px 16px 16px; font-size: 14px; }
+  .seq { display: flex; flex-wrap: wrap; gap: 4px; margin: 8px 0 12px; }
+  .seq i { font-style: normal; font-weight: 700; font-size: 12px; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 5px; color: #fff; }
+  .seq i.po { background: var(--po); }
+  .seq i.jo { background: var(--jo); }
+  .meta { color: var(--muted); font-size: 13px; line-height: 1.6; word-break: break-word; }
+  .empty { text-align: center; color: var(--napkin); opacity: .7; padding: 40px 0; font-family: var(--hand); font-size: 22px; }
+  .opts { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin: 0 0 10px; color: var(--napkin); font-size: 14px; }
+  .opts label { display: flex; gap: 6px; align-items: center; opacity: .8; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <form class="card login hidden" id="login">
+    <h1>Statistikat</h1>
+    <label for="user">Përdoruesi</label>
+    <input id="user" autocomplete="username" autocapitalize="none" required>
+    <label for="pass">Fjalëkalimi</label>
+    <input id="pass" type="password" autocomplete="current-password" required>
+    <button class="btn" type="submit">Hyr</button>
+    <p class="err" id="err" role="alert"></p>
+  </form>
+
+  <section id="panel" class="hidden">
+    <div class="top">
+      <h1>Statistikat</h1>
+      <div class="links">
+        <button type="button" id="clear">Fshi të gjitha</button>
+        <button type="button" id="logout">Dil</button>
+      </div>
+    </div>
+    <div class="totals">
+      <div class="tot"><b id="t-open">0</b><span>herë u hap linku</span></div>
+      <div class="tot po"><b id="t-po">0</b><span>klikime “Po”</span></div>
+      <div class="tot jo"><b id="t-jo">0</b><span>klikime “Jo”</span></div>
+      <div class="tot"><b id="t-dev">0</b><span>pajisje të ndryshme</span></div>
+      <div class="tot"><b id="t-time">0</b><span>kohë gjithsej në faqe</span></div>
+      <div class="tot"><b id="t-today">0</b><span>hapje sot</span></div>
+    </div>
+    <p class="last" id="last"></p>
+    <div class="opts">
+      <span class="live" id="updated"></span>
+      <label><input type="checkbox" id="mine"> Shfaq edhe hapjet e mia</label>
+    </div>
+    <div id="list"></div>
+  </section>
+
+</div>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const TZ = "Europe/Belgrade";
+  const MONTHS = ["jan", "shk", "mar", "pri", "maj", "qer", "kor", "gus", "sht", "tet", "nën", "dhj"];
+  const parts = (t) => Object.fromEntries(new Intl.DateTimeFormat("en-GB", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23" }).formatToParts(new Date(t)).map((p) => [p.type, p.value]));
+  const dayKey = (t) => { const p = parts(t); return `${p.year}-${p.month}-${p.day}`; };
+  const hm = (t) => { const p = parts(t); return `${p.hour}:${p.minute}`; };
+  const hms = (t) => { const p = parts(t); return `${p.hour}:${p.minute}:${p.second}`; };
+  function when(t, now) {
+    const k = dayKey(t);
+    if (k === dayKey(now)) return `Sot, ${hm(t)}`;
+    if (k === dayKey(now - 864e5)) return `Dje, ${hm(t)}`;
+    const p = parts(t);
+    return `${+p.day} ${MONTHS[+p.month - 1]}, ${hm(t)}`;
+  }
+  function dur(ms) {
+    const s = Math.round(ms / 1000);
+    if (s < 60) return `${s} s`;
+    const m = Math.floor(s / 60);
+    if (m < 60) return `${m} min ${s % 60 ? (s % 60) + " s" : ""}`.trim();
+    return `${Math.floor(m / 60)} orë ${m % 60} min`;
+  }
+  function ago(ms) {
+    const s = Math.round(ms / 1000);
+    if (s < 60) return "tani";
+    const m = Math.floor(s / 60);
+    if (m < 60) return `para ${m} min`;
+    const h = Math.floor(m / 60);
+    if (h < 24) return `para ${h} ${h === 1 ? "ore" : "orësh"}`;
+    const d = Math.floor(h / 24);
+    return `para ${d} ${d === 1 ? "dite" : "ditësh"}`;
+  }
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+
+  const open = new Set();
+  let timer = null;
+
+  async function load() {
+    const r = await fetch("/api/stats" + ($("mine").checked ? "?admin=1" : ""), { cache: "no-store" });
+    if (r.status === 401) return showLogin();
+    const { now, visits } = await r.json();
+    showPanel();
+    render(now, visits);
+  }
+
+  function render(now, visits) {
+    const real = visits.filter((v) => !v.admin);
+    let po = 0, jo = 0, time = 0;
+    for (const v of visits) {
+      for (const c of v.clicks) c.b === "po" ? po++ : jo++;
+      time += v.activeMs || 0;
+    }
+    $("t-open").textContent = visits.length;
+    $("t-po").textContent = po;
+    $("t-jo").textContent = jo;
+    $("t-dev").textContent = new Set(visits.map((v) => v.vid)).size;
+    $("t-time").textContent = dur(time);
+    $("t-today").textContent = visits.filter((v) => dayKey(v.at) === dayKey(now)).length;
+    $("last").textContent = real.length ? `Hapja e fundit: ${when(real[0].at, now)} (${ago(now - real[0].at)}).` : "";
+    $("updated").textContent = `Përditësuar ${hms(now)}`;
+
+    // numri rendor i hapjes për secilën pajisje
+    const nth = new Map(), seen = new Map();
+    for (const v of visits.slice().reverse()) { const n = (seen.get(v.vid) || 0) + 1; seen.set(v.vid, n); nth.set(v.id, n); }
+
+    const list = $("list");
+    list.innerHTML = "";
+    if (!visits.length) { list.appendChild(el("p", "empty", "Ende s'e ka hapur askush.")); return; }
+    for (const v of visits) {
+      const d = el("details", "visit");
+      d.open = open.has(v.id);
+      d.addEventListener("toggle", () => d.open ? open.add(v.id) : open.delete(v.id));
+      const s = el("summary");
+      const w = el("div", "when", when(v.at, now));
+      if (now - v.lastSeen < 35000) w.appendChild(el("span", "tag now", "në faqe tani"));
+      if (v.admin) w.appendChild(el("span", "tag me", "unë"));
+      if (nth.get(v.id) > 1) w.appendChild(el("span", "tag again", `hera e ${nth.get(v.id)}-të`));
+      s.appendChild(w);
+      const p = v.clicks.filter((c) => c.b === "po").length;
+      const counts = el("div", "counts");
+      counts.appendChild(el("span", "pill po", `Po ${p}`));
+      counts.appendChild(el("span", "pill jo", `Jo ${v.clicks.length - p}`));
+      counts.appendChild(el("span", "dur", dur(v.activeMs || 0)));
+      s.appendChild(counts);
+      s.appendChild(el("div", "dev", v.device));
+      d.appendChild(s);
+
+      const det = el("div", "detail");
+      if (v.clicks.length) {
+        det.appendChild(el("div", null, `Radha e klikimeve (${v.clicks.length}), nga ${hms(v.clicks[0].t)} deri ${hms(v.clicks[v.clicks.length - 1].t)}:`));
+        const seq = el("div", "seq");
+        for (const c of v.clicks) { const i = el("i", c.b, c.b === "po" ? "Po" : "Jo"); i.title = hms(c.t); seq.appendChild(i); }
+        det.appendChild(seq);
+      } else {
+        det.appendChild(el("div", null, "S'klikoi asnjë buton."));
+        det.lastChild.style.marginBottom = "10px";
+      }
+      const meta = el("div", "meta");
+      meta.textContent = [
+        `Hapur: ${hms(v.at)} · Parë për herë të fundit: ${hms(v.lastSeen)}`,
+        `IP: ${v.ip}${v.country ? " (" + v.country + ")" : ""} · Ekrani: ${v.screen || "?"}`,
+        v.ref ? `Erdhi nga: ${v.ref}` : "",
+        v.ua,
+      ].filter(Boolean).join("\n");
+      meta.style.whiteSpace = "pre-line";
+      det.appendChild(meta);
+      d.appendChild(det);
+      list.appendChild(d);
+    }
+  }
+
+  function showLogin() {
+    clearInterval(timer); timer = null;
+    $("panel").classList.add("hidden");
+    $("login").classList.remove("hidden");
+    $("user").focus();
+  }
+  function showPanel() {
+    $("login").classList.add("hidden");
+    $("panel").classList.remove("hidden");
+    if (!timer) timer = setInterval(() => { if (document.visibilityState === "visible") load().catch(() => {}); }, 10000);
+  }
+
+  $("login").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    $("err").textContent = "";
+    const r = await fetch("/api/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ user: $("user").value.trim(), pass: $("pass").value }) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) { $("err").textContent = j.error || "S'u kyçe."; return; }
+    $("pass").value = "";
+    load();
+  });
+  $("logout").addEventListener("click", async () => { await fetch("/api/logout", { method: "POST" }); showLogin(); });
+  $("clear").addEventListener("click", async () => {
+    if (!confirm("T'i fshij të gjitha statistikat? Kjo s'kthehet mbrapsht.")) return;
+    await fetch("/api/clear", { method: "POST" });
+    load();
+  });
+  $("mine").addEventListener("change", load);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && timer) load().catch(() => {}); });
+  load().catch(showLogin);
+})();
+</script>
+</body>
+</html>

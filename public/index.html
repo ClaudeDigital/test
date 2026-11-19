@@ -15,14 +15,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Hanken+Grotesk:wght@400;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --table: #18221c;        /* tavolina, e gjelbër e errët si sfondi i fotos */
+    --table: #18221c;
     --table-vein: #24332a;
     --napkin: #f6f2ea;
     --napkin-edge: #e4dccd;
-    --kraft: #cdb9ad;        /* letra e buqetës */
-    --ink: #1f3c8f;          /* stilolapsi blu */
-    --ink-soft: rgba(31, 60, 143, .55);
-    --coffee: #8a5b3c;
+    --ink: #1f3c8f;
     --hand: "Kalam", "Comic Sans MS", cursive;
     --ui: "Hanken Grotesk", system-ui, sans-serif;
   }
@@ -39,38 +36,24 @@
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     min-height: 100dvh;
     overflow: hidden;
+    touch-action: manipulation;
   }
   button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
   :focus-visible { outline: 3px solid #f2c14e; outline-offset: 4px; }
-  .hidden { display: none !important; }
 
   .stage {
     position: fixed; inset: 0;
     display: flex;
     padding: 20px 16px calc(28px + env(safe-area-inset-bottom));
-    overflow-y: auto; overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
   }
-
-  /* ---------- peceta ---------- */
   .napkin {
     display: grid;
     width: min(100%, 400px);
-    margin: auto; /* në mes kur ka vend, lëvizet kur formulari është më i gjatë se ekrani */
-    flex-shrink: 0;
+    margin: auto;
     animation: drop .8s cubic-bezier(.2, .8, .2, 1) both;
   }
   @keyframes drop { from { transform: translateY(-40px) rotate(-6deg); opacity: 0; } }
-  /* kalimi: peceta e parë largohet, e dyta vendoset në tavolinë */
-  .napkin.leaving { animation: leave .45s cubic-bezier(.5, 0, .9, .4) forwards; }
-  @keyframes leave { to { transform: translate(-36px, -24px) rotate(-7deg) scale(.97); opacity: 0; } }
-  .napkin.arrive { animation: arrive .75s cubic-bezier(.2, .8, .2, 1) both; }
-  @keyframes arrive {
-    from { transform: translate(40px, 30px) rotate(7deg) scale(.97); opacity: 0; }
-    to { transform: none; opacity: 1; }
-  }
   .face {
-    grid-area: 1 / 1;
     position: relative;
     background-color: var(--napkin);
     background-image:
@@ -78,6 +61,7 @@
       repeating-linear-gradient(90deg, rgba(0,0,0,.018) 0 2px, transparent 2px 5px);
     border-radius: 6px;
     padding: 34px 28px 30px;
+    transform: rotate(-1.5deg);
     box-shadow:
       inset 0 0 0 10px var(--napkin),
       inset 0 0 0 11px var(--napkin-edge),
@@ -85,11 +69,6 @@
       0 30px 60px -20px rgba(0,0,0,.6),
       0 8px 18px -8px rgba(0,0,0,.45);
   }
-  .front { transform: rotate(-1.5deg); }
-  .back { transform: rotate(1.5deg); display: none; }
-  .swapped .front { display: none; }
-  .swapped .back { display: block; }
-  /* gjurma e filxhanit */
   .ring {
     position: absolute; width: 132px; height: 132px; right: -26px; top: -30px;
     border-radius: 50%;
@@ -97,9 +76,8 @@
     pointer-events: none;
     transform: rotate(20deg) scaleX(1.04);
   }
-
-  h1, .hand { font-family: var(--hand); }
   h1 {
+    font-family: var(--hand);
     font-weight: 700;
     font-size: clamp(40px, 12vw, 54px);
     line-height: .98;
@@ -116,28 +94,25 @@
     color: var(--ink);
     padding: 4px 6px;
     line-height: 1;
-    position: relative;
+    white-space: nowrap;
+    user-select: none; -webkit-user-select: none;
   }
   .box {
     width: 34px; height: 34px; flex: none;
     border: 2.5px solid var(--ink);
     border-radius: 6px 3px 7px 2px / 3px 7px 2px 6px;
-    position: relative;
   }
-  .box svg { position: absolute; inset: -10px -8px -4px -6px; width: calc(100% + 14px); height: calc(100% + 14px); overflow: visible; }
-  .box path { fill: none; stroke: var(--ink); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 60; stroke-dashoffset: 60; }
-  .checked .box path { animation: tick .35s ease-out forwards; }
-  @keyframes tick { to { stroke-dashoffset: 0; } }
-
-  #yes { transform-origin: left center; transition: transform .45s cubic-bezier(.34, 1.5, .5, 1); z-index: 3; }
-  #no { z-index: 4; transition: left .35s ease, top .35s ease, transform .35s ease; white-space: nowrap; }
-  #no.flying {
+  .choice.flying {
     position: fixed;
+    z-index: 4;
     background: var(--napkin);
     padding: 10px 16px 10px 12px;
     border-radius: 4px;
     box-shadow: 0 10px 22px -8px rgba(0,0,0,.55);
+    transform-origin: center center;
+    transition: left .4s cubic-bezier(.3, 1.3, .5, 1), top .4s cubic-bezier(.3, 1.3, .5, 1), transform .45s cubic-bezier(.34, 1.5, .5, 1);
   }
+  .choice.flying.big { z-index: 3; }
 
   .remark {
     font-family: var(--hand);
@@ -145,118 +120,10 @@
     line-height: 1.3;
     margin-top: 22px;
     min-height: 2.7em;
-    color: var(--ink);
   }
   .remark span { display: inline-block; clip-path: inset(0 100% 0 0); }
   .remark span.write { animation: write .9s steps(22, end) forwards; }
   @keyframes write { to { clip-path: inset(0 0 0 0); } }
-  .remark .muted { opacity: .55; }
-
-  /* "Po" që e mbulon ekranin */
-  .takeover {
-    position: fixed; inset: 0; z-index: 20;
-    background: var(--ink);
-    color: var(--napkin);
-    display: grid; place-items: center; text-align: center;
-    font-family: var(--hand);
-    animation: spill .5s cubic-bezier(.2, .8, .2, 1);
-  }
-  .takeover b { display: block; font-size: clamp(110px, 38vw, 220px); line-height: .9; font-weight: 700; }
-  .takeover small { font-size: 22px; opacity: .8; }
-  @keyframes spill { from { clip-path: circle(0 at 50% 50%); } to { clip-path: circle(150% at 50% 50%); } }
-
-  /* ---------- ana e pasme: formulari si fjali ---------- */
-  .back h2 { font-family: var(--hand); font-weight: 700; font-size: 34px; line-height: 1; transform: rotate(-1.5deg); margin-bottom: 18px; }
-  .line { font-family: var(--hand); font-size: 22px; line-height: 1.5; margin-top: 12px; }
-  .line label { display: block; }
-  .blank {
-    font-family: var(--hand); font-size: 22px; font-weight: 700;
-    color: var(--ink);
-    width: 100%;
-    background: transparent;
-    border: 0;
-    border-bottom: 2px dashed var(--ink-soft);
-    padding: 2px 2px 4px;
-    outline: none;
-    border-radius: 0;
-    appearance: none; -webkit-appearance: none;
-  }
-  .blank::placeholder { color: var(--ink-soft); font-weight: 400; }
-  .blank:focus { border-bottom-style: solid; border-bottom-color: var(--ink); }
-  textarea.blank { resize: none; height: 2.6em; line-height: 1.3; }
-
-  .days { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 2px; }
-  .day {
-    font-family: var(--hand); font-size: 21px; padding: 2px 6px;
-    position: relative;
-  }
-  .day[aria-pressed="true"]::after {
-    content: ""; position: absolute; inset: -4px -6px;
-    border: 2.5px solid var(--ink);
-    border-radius: 50% 46% 52% 44% / 54% 48% 50% 46%;
-    transform: rotate(-3deg);
-    animation: circle .3s ease-out;
-  }
-  @keyframes circle { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
-  .date-pick { margin-top: 8px; font-family: var(--ui); font-size: 16px; font-weight: 600; }
-  .when-text { font-family: var(--hand); font-size: 17px; opacity: .7; min-height: 1.4em; }
-
-  .time { display: inline-flex; align-items: baseline; gap: 4px; }
-  .time select {
-    font-family: var(--hand); font-size: 24px; font-weight: 700; color: var(--ink);
-    background: transparent; border: 0; border-bottom: 2px dashed var(--ink-soft);
-    padding: 0 4px; appearance: none; -webkit-appearance: none; border-radius: 0;
-    text-align: center;
-  }
-
-  .send {
-    margin-top: 24px; width: 100%;
-    background: var(--ink); color: var(--napkin);
-    font-family: var(--ui); font-weight: 600; font-size: 18px;
-    padding: 15px;
-    border-radius: 10px 6px 12px 5px / 6px 12px 5px 10px;
-    box-shadow: 0 8px 16px -8px rgba(31, 60, 143, .8);
-  }
-  .send:disabled { opacity: .6; }
-  .ps { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 8px; }
-  .ps-chip {
-    font-family: var(--hand); font-size: 18px; line-height: 1.2;
-    padding: 5px 12px;
-    border: 1.5px dashed var(--ink-soft);
-    border-radius: 14px 10px 16px 9px / 10px 15px 9px 14px;
-    color: var(--ink);
-  }
-  .ps-chip::before { content: "+ "; opacity: .6; }
-  .ps-chip[aria-pressed="true"] { background: var(--ink); color: var(--napkin); border-style: solid; border-color: var(--ink); }
-  .ps-chip[aria-pressed="true"]::before { content: "✓ "; opacity: 1; }
-  .err { font-family: var(--ui); font-weight: 600; font-size: 14px; color: #a3321f; margin-top: 10px; min-height: 1.2em; text-align: center; }
-
-  /* ---------- fundi: buqeta ---------- */
-  .done { position: fixed; inset: 0; background: #121a15; overflow: hidden; }
-  .done img {
-    position: absolute; inset: 0; width: 100%; height: 100%;
-    object-fit: cover; object-position: 50% 42%;
-    animation: reveal 2.2s cubic-bezier(.2, .7, .2, 1) both;
-  }
-  @media (min-aspect-ratio: 4/5) { .done img { object-fit: contain; } }
-  @keyframes reveal { from { transform: scale(1.12); filter: brightness(.2) saturate(.6); } }
-  .done::after {
-    content: ""; position: absolute; inset: 0; pointer-events: none;
-    background: linear-gradient(to top, rgba(18,26,21,.85) 0%, rgba(18,26,21,.2) 38%, transparent 55%);
-  }
-  .note {
-    position: absolute; z-index: 2;
-    left: 50%; bottom: max(34px, env(safe-area-inset-bottom));
-    width: min(calc(100% - 40px), 440px);
-    transform: translateX(-50%);
-    color: #fbf6ec; text-align: center;
-    text-shadow: 0 2px 14px rgba(0,0,0,.55);
-  }
-  .note > * { display: block; animation: rise 1s cubic-bezier(.2, .8, .2, 1) both; }
-  .note .big { font-family: var(--hand); font-weight: 700; font-size: clamp(34px, 9vw, 48px); line-height: 1.05; animation-delay: 1.5s; }
-  .note .when { font-family: var(--ui); font-size: 16px; line-height: 1.5; margin-top: 12px; opacity: .92; animation-delay: 1.9s; }
-  .note .joke { font-family: var(--hand); font-size: 20px; margin-top: 14px; color: #f2c14e; animation-delay: 2.5s; }
-  @keyframes rise { from { opacity: 0; transform: translateY(14px); } }
 
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0s !important; transition-duration: .01ms !important; }
@@ -265,104 +132,91 @@
 </head>
 <body>
 
-<main class="stage" id="stage">
-  <div class="napkin" id="napkin">
-
-    <!-- ana e parë -->
-    <section class="face front" id="front" aria-labelledby="q">
+<main class="stage">
+  <div class="napkin">
+    <section class="face" aria-labelledby="q">
       <span class="ring" aria-hidden="true"></span>
       <h1 id="q">A po pijmë kafe?<span class="sub">Se po, më duket, s’ka më zgjedhje.</span></h1>
       <div class="choices">
-        <button class="choice" id="yes" type="button">
-          <span class="box"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M7 21l9 9L36 4"/></svg></span>Po
-        </button>
-        <button class="choice" id="no" type="button">
-          <span class="box"></span>Jo
-        </button>
+        <button class="choice" id="yes" type="button"><span class="box"></span>Po</button>
+        <button class="choice" id="no" type="button"><span class="box"></span>Jo</button>
       </div>
       <p class="remark" id="remark" aria-live="polite"></p>
     </section>
-
-    <!-- ana e pasme -->
-    <section class="face back" id="back" aria-label="Detajet">
-      <form id="form" novalidate>
-        <h2>Atëherë, ta lëmë me shkrim:</h2>
-
-        <div class="line">
-          <label for="name">Unë jam</label>
-          <input class="blank" id="name" maxlength="60" autocomplete="given-name" placeholder="emri yt">
-        </div>
-
-        <div class="line">
-          <span id="day-label">Takohemi</span>
-          <div class="days" role="group" aria-labelledby="day-label">
-            <button type="button" class="day" data-offset="0" aria-pressed="false">sot</button>
-            <button type="button" class="day" data-offset="1" aria-pressed="false">nesër</button>
-            <button type="button" class="day" data-offset="2" aria-pressed="false">pasnesër</button>
-            <button type="button" class="day" data-offset="pick" aria-pressed="false">ditë tjetër</button>
-          </div>
-          <input class="blank date-pick hidden" id="date" type="date" aria-label="Data">
-          <div class="when-text" id="when-text"></div>
-        </div>
-
-        <div class="line">
-          në orën
-          <span class="time">
-            <select id="hour" aria-label="Ora"></select>:<select id="minute" aria-label="Minutat"><option>00</option><option>15</option><option selected>30</option><option>45</option></select>
-          </span>
-        </div>
-
-        <div class="line">
-          <label for="place">te</label>
-          <input class="blank" id="place" maxlength="120" placeholder="emri i kafenesë">
-        </div>
-
-        <div class="line">
-          <label for="note">P.S.</label>
-          <div class="ps" role="group" aria-label="Shto te P.S.">
-            <button type="button" class="ps-chip" aria-pressed="false">makiato e madhe</button>
-            <button type="button" class="ps-chip" aria-pressed="false">amerikane</button>
-            <button type="button" class="ps-chip" aria-pressed="false">çaj në vend të kafes</button>
-            <button type="button" class="ps-chip" aria-pressed="false">edhe një kroasan</button>
-            <button type="button" class="ps-chip" aria-pressed="false">mos u vono</button>
-          </div>
-          <textarea class="blank" id="note" maxlength="300" placeholder="ose shkruaj vetë…"></textarea>
-        </div>
-
-        <button class="send" id="send" type="submit">Konfirmo</button>
-        <p class="err" id="err" role="alert"></p>
-      </form>
-    </section>
-
   </div>
 </main>
-
-<div class="takeover hidden" id="takeover" role="button" tabindex="0" aria-label="Po">
-  <div><b>Po</b><small>s'ka më opsione</small></div>
-</div>
-
-<section class="done hidden" id="done" aria-live="polite">
-  <img id="bouquet" alt="Një buqetë me trëndafila portokalli dhe karafila të bardhë, e mbështjellë me letër">
-  <p class="note" id="final-note"></p>
-</section>
 
 <script>
 (() => {
   const $ = (id) => document.getElementById(id);
-  const yes = $("yes"), no = $("no"), remark = $("remark");
+  const yes = $("yes"), no = $("no"), remark = $("remark"), h1 = $("q");
 
-  const LINES = [
-    "Sigurt? Mendoje edhe një herë.",
-    "Kafja është në llogarinë time.",
-    "Po e shtoj edhe një kroasan.",
-    "Ky buton po lodhet. Ti jo?",
+  // ---------- gjurmimi ----------
+  let sid = null, vid = null;
+  const queue = [];
+  try { vid = localStorage.getItem("kafe.vid"); } catch {}
+  const shown = performance.now();
+  let activeMs = 0, visibleSince = document.visibilityState === "visible" ? shown : null;
+  const active = () => activeMs + (visibleSince !== null ? performance.now() - visibleSince : 0);
+
+  function post(url, data, beacon) {
+    const s = JSON.stringify(data);
+    if (beacon && navigator.sendBeacon) {
+      navigator.sendBeacon(url, new Blob([s], { type: "application/json" }));
+      return Promise.resolve();
+    }
+    return fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: s, keepalive: true }).catch(() => {});
+  }
+  function event(data, beacon) {
+    if (!sid) { queue.push(data); return; }
+    post("/api/event", { sid, activeMs: Math.round(active()), ...data }, beacon);
+  }
+  fetch("/api/visit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ vid, screen: `${screen.width}×${screen.height}`, ref: document.referrer }),
+  }).then((r) => r.json()).then((j) => {
+    sid = j.sid;
+    try { localStorage.setItem("kafe.vid", j.vid); } catch {}
+    queue.splice(0).forEach((d) => event(d));
+  }).catch(() => {});
+
+  setInterval(() => { if (document.visibilityState === "visible") event({}); }, 15000);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") {
+      if (visibleSince !== null) { activeMs += performance.now() - visibleSince; visibleSince = null; }
+      event({}, true);
+    } else {
+      visibleSince = performance.now();
+    }
+  });
+  addEventListener("pagehide", () => event({}, true));
+
+  // ---------- loja ----------
+  const JO_LINES = [
+    "Hmm. Po e bëj “Po” pak më të madh.",
+    "Sigurt? Kafja po ftohet ndërkohë.",
     "Gishti të rrëshqiti, apo?",
-    "Makiatoja atje është shumë e mirë, besomë.",
-    "Po e shkruaj “Po” pak më të madh.",
-    "“Jo” sot s'pranohet si përgjigje.",
+    "“Jo” s'pranohet si përgjigje. As sot, as nesër.",
+    "Ti thua jo, “Po” rritet. Ligj i fizikës.",
+    "Po e shënoj: “ende po mendohet”.",
+    "Ky buton po lodhet. Ti jo?",
+    "E di që e do “Po”-në, veç po luan.",
   ];
-  const TAKEOVER_AT = LINES.length + 1;
-  let noCount = 0;
+  const PO_LINES = [
+    "Po? Tani? Pak vonë, nuk të duket?",
+    "Ah, tani po. Kafja u ftoh ndërkohë.",
+    "Kamerieri ka shkuar në shtëpi.",
+    "Kafeneja e mbylli derën para dy orësh.",
+    "Tani “Jo”-ja po më duket më bindëse.",
+    "Treni iku. Po e pret tjetrin?",
+    "Makiatoja po pyet: ku ishe deri tani?",
+    "Po e ruaj këtë “Po” për herë tjetër.",
+    "E dëgjova. Me vonesë, por e dëgjova.",
+  ];
+  let ji = 0, pi = 0;
+  const scale = { yes: 1, no: 1 };
+  const rot = { yes: 0, no: 0 };
 
   function say(text) {
     remark.innerHTML = "";
@@ -372,189 +226,72 @@
     requestAnimationFrame(() => s.classList.add("write"));
   }
 
-  function moveNo() {
-    const pad = 14;
-    const r = no.getBoundingClientRect();
-    const yr = yes.getBoundingClientRect();
-    const W = innerWidth, H = innerHeight;
-    if (!no.classList.contains("flying")) {
-      // jashtë pecetës së rrotulluar, që "fixed" të matet nga ekrani
-      document.body.appendChild(no);
-      no.style.left = r.left + "px"; no.style.top = r.top + "px";
-      no.classList.add("flying");
-      no.offsetWidth;
+  function launch() {
+    if (yes.classList.contains("flying")) return;
+    const ry = yes.getBoundingClientRect(), rn = no.getBoundingClientRect();
+    for (const [b, r] of [[yes, ry], [no, rn]]) {
+      document.body.appendChild(b); // jashtë pecetës së rrotulluar, që "fixed" të matet nga ekrani
+      b.classList.add("flying");
+      b.style.left = r.left + "px"; b.style.top = r.top + "px";
     }
-    const nr = no.getBoundingClientRect();
-    // "Po" pas rritjes (madhësia e ardhshme, jo ajo gjatë animacionit)
-    const k = (1 + noCount * 0.32) / (parseFloat((yes.style.transform.match(/scale\(([\d.]+)/) || [0, 1])[1]) || 1);
-    const cx = (yr.left + yr.right) / 2, cy = (yr.top + yr.bottom) / 2;
-    const grown = { left: cx - yr.width * k / 2, right: cx + yr.width * k / 2, top: cy - yr.height * k / 2, bottom: cy + yr.height * k / 2 };
-    // zonat që s'duhen mbuluar: teksti poshtë pyetjes (pesha më e madhe), pyetja, "Po"
-    const zones = [[remark.getBoundingClientRect(), 4], [document.querySelector("h1").getBoundingClientRect(), 2], [grown, 1]];
-    const m = 12;
-    const cost = (x, y) => zones.reduce((sum, [z, w]) => {
-      const ox = Math.max(0, Math.min(x + nr.width, z.right + m) - Math.max(x, z.left - m));
-      const oy = Math.max(0, Math.min(y + nr.height, z.bottom + m) - Math.max(y, z.top - m));
-      return sum + ox * oy * w;
-    }, 0);
-    let x, y, best = Infinity;
-    for (let t = 0; t < 120 && best > 0; t++) {
-      const cx2 = pad + Math.random() * Math.max(1, W - nr.width - pad * 2);
-      const cy2 = pad + Math.random() * Math.max(1, H - nr.height - pad * 2);
-      const c = cost(cx2, cy2);
-      if (c < best) { best = c; x = cx2; y = cy2; }
+    yes.offsetWidth;
+  }
+
+  function place() {
+    const W = innerWidth, H = innerHeight, pad = 12, m = 12;
+    const items = [[yes, "yes"], [no, "no"]].sort((a, b) => scale[b[1]] - scale[a[1]]);
+    const taken = [[remark.getBoundingClientRect(), 4], [h1.getBoundingClientRect(), 2]];
+    for (const [b, k] of items) {
+      const w = b.offsetWidth, h = b.offsetHeight, s = scale[k];
+      const sw = w * s, sh = h * s;
+      const range = (size, max) => size + pad * 2 >= max ? [max / 2, max / 2] : [pad + size / 2, max - pad - size / 2];
+      const [x0, x1] = range(sw, W), [y0, y1] = range(sh, H);
+      const cost = (cx, cy) => taken.reduce((sum, [z, wt]) => {
+        const ox = Math.max(0, Math.min(cx + sw / 2, z.right + m) - Math.max(cx - sw / 2, z.left - m));
+        const oy = Math.max(0, Math.min(cy + sh / 2, z.bottom + m) - Math.max(cy - sh / 2, z.top - m));
+        return sum + ox * oy * wt;
+      }, 0);
+      let best = Infinity, bx = W / 2, by = H / 2;
+      for (let t = 0; t < 150 && best > 0; t++) {
+        const cx = x0 + Math.random() * (x1 - x0), cy = y0 + Math.random() * (y1 - y0);
+        const c = cost(cx, cy);
+        if (c < best) { best = c; bx = cx; by = cy; }
+      }
+      rot[k] = Math.round(Math.random() * 20 - 10);
+      b.style.left = (bx - w / 2) + "px";
+      b.style.top = (by - h / 2) + "px";
+      b.style.transform = `rotate(${rot[k]}deg) scale(${s.toFixed(2)})`;
+      b.classList.toggle("big", s > 1);
+      taken.push([{ left: bx - sw / 2, right: bx + sw / 2, top: by - sh / 2, bottom: by + sh / 2 }, 3]);
     }
-    no.style.left = x + "px"; no.style.top = y + "px";
-    no.style.transform = `rotate(${Math.round(Math.random() * 24 - 12)}deg)`;
   }
 
-  no.addEventListener("click", () => {
-    noCount++;
-    if (navigator.vibrate) navigator.vibrate(25);
-    if (noCount >= TAKEOVER_AT) {
-      no.classList.add("hidden");
-      $("takeover").classList.remove("hidden");
-      return;
-    }
-    say(LINES[(noCount - 1) % LINES.length]);
-    moveNo();
-    yes.style.transform = `scale(${(1 + noCount * 0.32).toFixed(2)})`;
-  });
-  addEventListener("resize", () => { if (no.classList.contains("flying") && !no.classList.contains("hidden")) moveNo(); });
-
-  // foto ngarkohet në sfond sa më herët që të jetë gati në fund
-  const photo = new Image();
-  function preload() {
-    if (photo.src) return;
-    photo.src = innerWidth > 760 ? "/buqeta.jpg" : "/buqeta-700.jpg";
+  // kur një buton bëhet shumë i madh, kthehet në madhësinë fillestare
+  function tooBig(b, k) {
+    const s = scale[k];
+    return b.offsetWidth * s > innerWidth * 0.8 || b.offsetHeight * s > innerHeight * 0.3;
   }
-  no.addEventListener("click", preload, { once: true });
 
-  function accept() {
-    preload();
-    $("takeover").classList.add("hidden");
-    no.classList.add("hidden");
-    yes.style.transform = "";
-    yes.classList.add("checked");
-    say("Më në fund!");
-    const nap = $("napkin");
-    setTimeout(() => {
-      nap.classList.add("leaving");
-      setTimeout(() => {
-        // ndërrimi ndodh kur peceta s'duket, që lartësia e re të mos shihet
-        nap.classList.remove("leaving");
-        nap.classList.add("swapped", "arrive");
-        $("front").setAttribute("aria-hidden", "true");
-        setTimeout(() => $("name").focus({ preventScroll: true }), 750);
-      }, 450);
-    }, 900);
-  }
-  yes.addEventListener("click", accept);
-  $("takeover").addEventListener("click", accept);
-  $("takeover").addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); accept(); } });
-
-  // ---------- formulari ----------
-  const MONTHS = ["janar","shkurt","mars","prill","maj","qershor","korrik","gusht","shtator","tetor","nëntor","dhjetor"];
-  const DAYS = ["e diel","e hënë","e martë","e mërkurë","e enjte","e premte","e shtunë"];
-  const DAYS_ACC = ["të dielën","të hënën","të martën","të mërkurën","të enjten","të premten","të shtunën"];
-  const p2 = (n) => String(n).padStart(2, "0");
-  const iso = (d) => `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}`;
-  const parse = (s) => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
-  const nice = (s) => { const d = parse(s); return `${DAYS[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]}`; };
-
-  let chosen = "", chosenWord = "";
-  const dateInput = $("date");
-  dateInput.min = iso(new Date());
-
-  function setDate(s, word) {
-    chosen = s; chosenWord = word || "";
-    $("when-text").textContent = s ? nice(s) : "";
-  }
-  document.querySelectorAll(".day").forEach((b) => b.addEventListener("click", () => {
-    document.querySelectorAll(".day").forEach((x) => x.setAttribute("aria-pressed", "false"));
-    b.setAttribute("aria-pressed", "true");
-    const off = b.dataset.offset;
-    if (off === "pick") {
-      dateInput.classList.remove("hidden");
-      setDate(dateInput.value || "");
-      try { dateInput.showPicker(); } catch { dateInput.focus(); }
+  function hit(which) {
+    if (navigator.vibrate) navigator.vibrate(20);
+    event({ click: which });
+    launch();
+    const grow = which === "jo" ? "yes" : "no";
+    const el = grow === "yes" ? yes : no;
+    scale[grow] = +(scale[grow] + 0.3).toFixed(2);
+    if (tooBig(el, grow)) {
+      scale.yes = 1; scale.no = 1;
+      say(which === "jo" ? "Mirë, ta nisim prapë nga fillimi." : "Ok, prapë nga e para. Por prapë vonë je.");
+    } else if (which === "jo") {
+      say(JO_LINES[ji++ % JO_LINES.length]);
     } else {
-      dateInput.classList.add("hidden");
-      const d = new Date(); d.setDate(d.getDate() + Number(off));
-      setDate(iso(d), b.textContent.trim());
+      say(PO_LINES[pi++ % PO_LINES.length]);
     }
-  }));
-  dateInput.addEventListener("change", () => setDate(dateInput.value));
-
-  // P.S.: prekja shton ose heq fjalinë
-  const noteEl = $("note");
-  document.querySelectorAll(".ps-chip").forEach((c) => c.addEventListener("click", () => {
-    const t = c.textContent.trim();
-    let parts = noteEl.value.split(",").map((x) => x.trim()).filter(Boolean);
-    const on = c.getAttribute("aria-pressed") !== "true";
-    parts = on ? [...parts, t] : parts.filter((x) => x !== t);
-    noteEl.value = parts.join(", ").slice(0, 300);
-    c.setAttribute("aria-pressed", String(on));
-  }));
-  noteEl.addEventListener("input", () => {
-    document.querySelectorAll(".ps-chip").forEach((c) => c.setAttribute("aria-pressed", String(noteEl.value.includes(c.textContent.trim()))));
-  });
-
-  const hour = $("hour");
-  for (let h = 7; h <= 23; h++) {
-    const o = document.createElement("option");
-    o.value = o.textContent = p2(h);
-    if (h === 18) o.selected = true;
-    hour.appendChild(o);
+    place();
   }
-
-  $("form").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const err = $("err");
-    err.textContent = "";
-    const name = $("name").value.trim();
-    const place = $("place").value.trim();
-    const time = `${hour.value}:${$("minute").value}`;
-    if (!name) { err.textContent = "Shkruaje emrin."; return $("name").focus(); }
-    if (!chosen) { err.textContent = "Zgjidh ditën."; return; }
-    if (chosen < iso(new Date())) { err.textContent = "Kjo ditë ka kaluar. Zgjidh një tjetër."; return; }
-    if (!place) { err.textContent = "Shkruaje vendin."; return $("place").focus(); }
-
-    const btn = $("send");
-    btn.disabled = true; btn.textContent = "Duke dërguar…";
-    try {
-      const r = await fetch("/api/confirm", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, date: chosen, time, place, note: $("note").value.trim(), noCount }),
-      });
-      const j = await r.json().catch(() => ({}));
-      if (!r.ok) throw new Error(j.error || "S'u dërgua. Provo prapë.");
-      finish(name, time, place);
-    } catch (ex) {
-      err.textContent = ex.message || "S'ka lidhje me internetin. Provo prapë.";
-      btn.disabled = false; btn.textContent = "Konfirmo";
-    }
-  });
-
-  function finish(name, time, place) {
-    const d = parse(chosen);
-    const when = chosenWord === "sot" || chosenWord === "nesër" || chosenWord === "pasnesër"
-      ? `${chosenWord}, ${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}`
-      : `${DAYS_ACC[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]}`;
-    const note = $("final-note");
-    note.textContent = "";
-    const add = (cls, t) => { const el = document.createElement("span"); el.className = cls; el.textContent = t; note.appendChild(el); };
-    const When = when.charAt(0).toUpperCase() + when.slice(1);
-    add("big", `U morëm vesh, ${name}.`);
-    add("when", `${When}, në orën ${time}, te ${place}.`);
-    add("joke", "Nëse vonohesh, e pi edhe kafen tënde.");
-
-    const img = $("bouquet");
-    img.src = photo.src || "/buqeta-700.jpg";
-    $("stage").classList.add("hidden");
-    $("done").classList.remove("hidden");
-  }
+  no.addEventListener("click", () => hit("jo"));
+  yes.addEventListener("click", () => hit("po"));
+  addEventListener("resize", () => { if (yes.classList.contains("flying")) place(); });
 })();
 </script>
 </body>

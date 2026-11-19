@@ -1,9 +1,9 @@
-// A po pijmë kafe? — server i vogël pa varësi (Node 20+)
+// A po pijmë kafe? (test) — lojë pa fund + statistika + njoftim Telegram (Node 20+, pa varësi)
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
+const crypto = require("crypto");
 
-// .env i thjeshtë
 const envFile = path.join(__dirname, ".env");
 if (fs.existsSync(envFile)) {
   for (const line of fs.readFileSync(envFile, "utf8").split("\n")) {
@@ -13,11 +13,13 @@ if (fs.existsSync(envFile)) {
 }
 
 const PORT = Number(process.env.PORT || 3000);
-const RESEND_API_KEY = process.env.RESEND_API_KEY || "";
-const MAIL_TO = process.env.MAIL_TO || "";
-const MAIL_FROM = process.env.MAIL_FROM || "Kafe <kafe@cmimet.gezimm.com>";
+const TG_TOKEN = process.env.TELEGRAM_TOKEN || "";
+const TG_CHAT = process.env.TELEGRAM_CHAT_ID || "";
+const ADMIN_USER = process.env.ADMIN_USER || "admin";
+const ADMIN_PASS = process.env.ADMIN_PASS || "admin123";
 const PUBLIC = path.join(__dirname, "public");
 const DATA = path.join(__dirname, "data");
+const STATS = path.join(DATA, "stats.json");
 fs.mkdirSync(DATA, { recursive: true });
 
 const TYPES = {
@@ -26,63 +28,31 @@ const TYPES = {
   ".js": "text/javascript; charset=utf-8",
   ".svg": "image/svg+xml",
   ".png": "image/png",
+  ".jpg": "image/jpeg",
   ".ico": "image/x-icon",
-  ".webmanifest": "application/manifest+json",
 };
 
-const MONTHS = ["janar", "shkurt", "mars", "prill", "maj", "qershor", "korrik", "gusht", "shtator", "tetor", "nëntor", "dhjetor"];
-const DAYS = ["e diel", "e hënë", "e martë", "e mërkurë", "e enjte", "e premte", "e shtunë"];
-
-function fmtDate(iso) {
-  const [y, m, d] = iso.split("-").map(Number);
-  const dt = new Date(Date.UTC(y, m - 1, d));
-  return `${DAYS[dt.getUTCDay()]}, ${d} ${MONTHS[m - 1]} ${y}`;
+// ---------- ruajtja ----------
+let db = { visits: [] };
+try { db = JSON.parse(fs.readFileSync(STATS, "utf8")); } catch {}
+if (!Array.isArray(db.visits)) db.visits = [];
+let saveTimer = null;
+function save() {
+  if (saveTimer) return;
+  saveTimer = setTimeout(() => {
+    saveTimer = null;
+    const tmp = STATS + ".tmp";
+    fs.writeFileSync(tmp, JSON.stringify(db));
+    fs.renameSync(tmp, STATS);
+  }, 500);
 }
+const byId = (id) => db.visits.find((v) => v.id === id);
 
-function esc(s) {
-  return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-}
-
-// kufi i thjeshtë: 5 konfirmime / orë për IP
-const hits = new Map();
-function limited(ip) {
-  const now = Date.now();
-  const arr = (hits.get(ip) || []).filter((t) => now - t < 3600e3);
-  arr.push(now);
-  hits.set(ip, arr);
-  return arr.length > 5;
-}
-
-function json(res, code, obj) {
-  res.writeHead(code, { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" });
+// ---------- ndihmës ----------
+function json(res, code, obj, headers = {}) {
+  res.writeHead(code, { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store", ...headers });
   res.end(JSON.stringify(obj));
 }
-
-async function sendMail(b) {
-  const when = `${fmtDate(b.date)}, ora ${b.time}`;
-  const html = `
-  <div style="font-family:Georgia,serif;max-width:520px;margin:auto;background:#fff7f2;border-radius:16px;padding:28px;color:#3b1f1a">
-    <p style="font-size:40px;margin:0">☕</p>
-    <h1 style="font-size:24px;margin:8px 0 4px">${esc(b.name)} tha PO!</h1>
-    <p style="margin:0 0 20px;color:#8a5a4f">Kafja u caktua.</p>
-    <table style="font-size:16px;border-collapse:collapse">
-      <tr><td style="padding:6px 16px 6px 0;color:#8a5a4f">Kush</td><td><b>${esc(b.name)}</b></td></tr>
-      <tr><td style="padding:6px 16px 6px 0;color:#8a5a4f">Kur</td><td><b>${esc(when)}</b></td></tr>
-      <tr><td style="padding:6px 16px 6px 0;color:#8a5a4f">Ku</td><td><b>${esc(b.place)}</b></td></tr>
-      ${b.note ? `<tr><td style="padding:6px 16px 6px 0;color:#8a5a4f;vertical-align:top">Shënim</td><td>${esc(b.note)}</td></tr>` : ""}
-    </table>
-    <p style="margin-top:22px;font-size:14px;color:#8a5a4f">Para se me thënë “Po”, e shtypi “Jo” ${b.noCount} ${b.noCount === 1 ? "herë" : "herë"}.</p>
-  </div>`;
-  const text = `${b.name} tha PO!\nKur: ${when}\nKu: ${b.place}${b.note ? `\nShënim: ${b.note}` : ""}\n"Jo" u shtyp ${b.noCount} herë.`;
-
-  const r = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: MAIL_FROM, to: [MAIL_TO], subject: `☕ ${b.name} tha PO — ${when}`, html, text }),
-  });
-  if (!r.ok) throw new Error(`Resend ${r.status}: ${await r.text()}`);
-}
-
 function readBody(req) {
   return new Promise((resolve, reject) => {
     let size = 0;
@@ -96,67 +66,196 @@ function readBody(req) {
     req.on("error", reject);
   });
 }
-
-function todayBelgrade() {
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Belgrade" }).format(new Date());
-}
-
-async function confirm(req, res) {
-  const ip = req.headers["cf-connecting-ip"] || req.headers["x-real-ip"] || req.socket.remoteAddress;
-  if (limited(ip)) return json(res, 429, { error: "Shumë tentativa. Provo pak më vonë." });
-  let b;
-  try { b = JSON.parse(await readBody(req)); } catch { return json(res, 400, { error: "Të dhëna të pavlefshme." }); }
-
-  const name = String(b.name || "").trim().slice(0, 60);
-  const place = String(b.place || "").trim().slice(0, 120);
-  const note = String(b.note || "").trim().slice(0, 300);
-  const date = String(b.date || "");
-  const time = String(b.time || "");
-  const noCount = Math.max(0, Math.min(999, parseInt(b.noCount, 10) || 0));
-
-  if (!name) return json(res, 400, { error: "Shkruaje emrin." });
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || date < todayBelgrade()) return json(res, 400, { error: "Zgjidh një datë (sot ose më vonë)." });
-  if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(time)) return json(res, 400, { error: "Zgjidh orën." });
-  if (!place) return json(res, 400, { error: "Shkruaje vendin." });
-
-  const rec = { name, date, time, place, note, noCount, ip, at: new Date().toISOString() };
-  fs.appendFileSync(path.join(DATA, "konfirmimet.jsonl"), JSON.stringify(rec) + "\n");
-
-  try {
-    await sendMail(rec);
-  } catch (e) {
-    console.error("email dështoi:", e.message);
-    // u ruajt gjithsesi; mos e prish momentin për personin
-    return json(res, 200, { ok: true, mail: false });
+async function body(req) { try { return JSON.parse(await readBody(req) || "{}"); } catch { return {}; } }
+const ipOf = (req) => req.headers["cf-connecting-ip"] || req.headers["x-real-ip"] || req.socket.remoteAddress;
+function cookies(req) {
+  const out = {};
+  for (const p of String(req.headers.cookie || "").split(";")) {
+    const i = p.indexOf("=");
+    if (i > 0) out[p.slice(0, i).trim()] = decodeURIComponent(p.slice(i + 1).trim());
   }
-  json(res, 200, { ok: true, mail: true });
+  return out;
+}
+const fmtTime = (d) => new Intl.DateTimeFormat("sq-AL", { timeZone: "Europe/Belgrade", hour: "2-digit", minute: "2-digit", hour12: false }).format(d);
+
+function device(ua) {
+  ua = String(ua || "");
+  const os = /iPhone/.test(ua) ? "iPhone" : /iPad/.test(ua) ? "iPad" : /Android/.test(ua) ? "Android"
+    : /Windows/.test(ua) ? "Windows" : /Macintosh/.test(ua) ? "Mac" : /Linux/.test(ua) ? "Linux" : "pajisje e panjohur";
+  const br = /Instagram/.test(ua) ? "Instagram" : /FBAN|FBAV|FB_IAB/.test(ua) ? "Facebook" : /WhatsApp/.test(ua) ? "WhatsApp"
+    : /Snapchat/.test(ua) ? "Snapchat" : /TikTok|musical_ly/.test(ua) ? "TikTok" : /Telegram/.test(ua) ? "Telegram"
+    : /SamsungBrowser/.test(ua) ? "Samsung Internet" : /Edg\//.test(ua) ? "Edge" : /OPR\/|Opera/.test(ua) ? "Opera"
+    : /Firefox|FxiOS/.test(ua) ? "Firefox" : /CriOS|Chrome\//.test(ua) ? "Chrome" : /Safari/.test(ua) ? "Safari" : "shfletues";
+  return `${os} · ${br}`;
 }
 
-function serveStatic(req, res) {
-  let p = decodeURIComponent(new URL(req.url, "http://x").pathname);
-  if (p === "/") p = "/index.html";
-  const file = path.normalize(path.join(PUBLIC, p));
-  if (!file.startsWith(PUBLIC)) { res.writeHead(403); return res.end(); }
-  fs.readFile(file, (err, buf) => {
-    if (err) {
-      // çdo rrugë tjetër → faqja kryesore
-      return fs.readFile(path.join(PUBLIC, "index.html"), (e2, idx) => {
-        res.writeHead(e2 ? 404 : 200, { "Content-Type": TYPES[".html"] });
-        res.end(e2 ? "404" : idx);
-      });
-    }
-    const ext = path.extname(file);
-    res.writeHead(200, {
-      "Content-Type": TYPES[ext] || "application/octet-stream",
-      "Cache-Control": ext === ".html" ? "no-cache" : "public, max-age=3600",
+// ---------- admini ----------
+const sessions = new Map(); // token -> skadimi
+const ADMIN_MAX_AGE = 90 * 24 * 3600;
+function isAdmin(req) {
+  const t = cookies(req).kafe_admin;
+  const exp = t && sessions.get(t);
+  if (!exp) return false;
+  if (exp < Date.now()) { sessions.delete(t); return false; }
+  return true;
+}
+// sesionet ruhen te data, që restart-i i serverit të mos e nxjerrë adminin
+const SESS = path.join(DATA, "sessions.json");
+try { for (const [k, v] of Object.entries(JSON.parse(fs.readFileSync(SESS, "utf8")))) sessions.set(k, v); } catch {}
+const saveSessions = () => fs.writeFileSync(SESS, JSON.stringify(Object.fromEntries(sessions)));
+
+const loginTries = new Map();
+function loginLimited(ip) {
+  const now = Date.now();
+  const arr = (loginTries.get(ip) || []).filter((t) => now - t < 15 * 60e3);
+  arr.push(now);
+  loginTries.set(ip, arr);
+  return arr.length > 10;
+}
+const same = (a, b) => {
+  const x = Buffer.from(String(a)), y = Buffer.from(String(b));
+  return x.length === y.length && crypto.timingSafeEqual(x, y);
+};
+
+// ---------- Telegram ----------
+async function telegram(text) {
+  if (!TG_TOKEN || !TG_CHAT) return;
+  try {
+    const r = await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: TG_CHAT, text, disable_web_page_preview: true }),
+      signal: AbortSignal.timeout(10_000),
     });
+    if (!r.ok) console.error("telegram:", r.status, await r.text());
+  } catch (e) { console.error("telegram:", e.message); }
+}
+
+// ---------- API ----------
+const visitLimit = new Map();
+async function apiVisit(req, res) {
+  const b = await body(req);
+  const ip = ipOf(req);
+  const now = Date.now();
+  const arr = (visitLimit.get(ip) || []).filter((t) => now - t < 60e3);
+  arr.push(now); visitLimit.set(ip, arr);
+  if (arr.length > 20) return json(res, 429, {});
+
+  const vid = /^[a-z0-9]{8,40}$/i.test(b.vid || "") ? b.vid : crypto.randomBytes(9).toString("hex");
+  const admin = isAdmin(req);
+  const ua = String(req.headers["user-agent"] || "").slice(0, 300);
+  const v = {
+    id: crypto.randomBytes(9).toString("hex"),
+    vid, at: now, lastSeen: now, activeMs: 0,
+    ip, country: req.headers["cf-ipcountry"] || "", ua, device: device(ua),
+    screen: String(b.screen || "").slice(0, 20),
+    ref: String(b.ref || "").slice(0, 200),
+    admin, clicks: [],
+  };
+  db.visits.push(v);
+  if (db.visits.length > 5000) db.visits.splice(0, db.visits.length - 5000);
+  save();
+
+  if (!admin) {
+    const real = db.visits.filter((x) => !x.admin);
+    const nth = real.filter((x) => x.vid === vid).length;
+    const lines = [
+      "☕ U hap test.gezimm.com",
+      `${fmtTime(new Date(now))} · ${v.device}`,
+      nth > 1 ? `Hapja e ${nth}-të nga kjo pajisje (gjithsej ${real.length}).` : `Hera e parë nga kjo pajisje (gjithsej ${real.length}).`,
+    ];
+    telegram(lines.join("\n"));
+  }
+  json(res, 200, { sid: v.id, vid });
+}
+
+async function apiEvent(req, res) {
+  const b = await body(req);
+  const v = byId(String(b.sid || ""));
+  if (!v) return json(res, 404, {});
+  const now = Date.now();
+  if (b.click === "po" || b.click === "jo") {
+    if (v.clicks.length < 3000) v.clicks.push({ b: b.click, t: now });
+  }
+  const ms = Number(b.activeMs);
+  if (Number.isFinite(ms) && ms > v.activeMs) v.activeMs = Math.min(ms, now - v.at + 5000);
+  v.lastSeen = now;
+  save();
+  json(res, 200, { ok: true });
+}
+
+async function apiLogin(req, res) {
+  if (loginLimited(ipOf(req))) return json(res, 429, { error: "Shumë tentativa. Provo pas 15 minutash." });
+  const b = await body(req);
+  if (!same(b.user || "", ADMIN_USER) || !same(b.pass || "", ADMIN_PASS)) return json(res, 401, { error: "Përdoruesi ose fjalëkalimi është gabim." });
+  const t = crypto.randomBytes(24).toString("hex");
+  sessions.set(t, Date.now() + ADMIN_MAX_AGE * 1000);
+  saveSessions();
+  json(res, 200, { ok: true }, { "Set-Cookie": `kafe_admin=${t}; Path=/; Max-Age=${ADMIN_MAX_AGE}; HttpOnly; Secure; SameSite=Lax` });
+}
+function apiLogout(req, res) {
+  const t = cookies(req).kafe_admin;
+  if (t) { sessions.delete(t); saveSessions(); }
+  json(res, 200, { ok: true }, { "Set-Cookie": "kafe_admin=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Lax" });
+}
+function apiStats(req, res) {
+  if (!isAdmin(req)) return json(res, 401, { error: "Kyçu." });
+  const showAdmin = new URL(req.url, "http://x").searchParams.get("admin") === "1";
+  const visits = db.visits.filter((v) => showAdmin || !v.admin).slice().reverse().map((v) => ({
+    id: v.id, vid: v.vid, at: v.at, lastSeen: v.lastSeen, activeMs: v.activeMs, device: v.device, ua: v.ua,
+    ip: v.ip, country: v.country, screen: v.screen, ref: v.ref, admin: v.admin, clicks: v.clicks,
+  }));
+  json(res, 200, { now: Date.now(), visits });
+}
+async function apiClear(req, res) {
+  if (!isAdmin(req)) return json(res, 401, {});
+  db.visits = [];
+  save();
+  json(res, 200, { ok: true });
+}
+
+// ---------- skedarët ----------
+function sendFile(res, file, cache) {
+  fs.readFile(file, (err, buf) => {
+    if (err) { res.writeHead(404); return res.end("404"); }
+    const ext = path.extname(file);
+    res.writeHead(200, { "Content-Type": TYPES[ext] || "application/octet-stream", "Cache-Control": cache });
     res.end(buf);
   });
 }
+function serveStatic(req, res) {
+  let p = decodeURIComponent(new URL(req.url, "http://x").pathname);
+  if (p === "/admin" || p === "/admin/") {
+    return sendFile(res, path.join(PUBLIC, "admin.html"), "no-store");
+  }
+  if (p === "/") p = "/index.html";
+  const file = path.normalize(path.join(PUBLIC, p));
+  if (!file.startsWith(PUBLIC) || file.endsWith("admin.html")) return sendFile(res, path.join(PUBLIC, "index.html"), "no-cache");
+  fs.stat(file, (err, st) => {
+    if (err || !st.isFile()) return sendFile(res, path.join(PUBLIC, "index.html"), "no-cache");
+    sendFile(res, file, path.extname(file) === ".html" ? "no-cache" : "public, max-age=3600");
+  });
+}
+
+const ROUTES = {
+  "POST /api/visit": apiVisit,
+  "POST /api/event": apiEvent,
+  "POST /api/login": apiLogin,
+  "POST /api/logout": apiLogout,
+  "GET /api/stats": apiStats,
+  "POST /api/clear": apiClear,
+  "GET /api/health": (req, res) => json(res, 200, { ok: true }),
+};
 
 http.createServer((req, res) => {
-  if (req.method === "POST" && req.url === "/api/confirm") return confirm(req, res).catch((e) => { console.error(e); json(res, 500, { error: "Diçka shkoi keq." }); });
-  if (req.method === "GET" && req.url === "/api/health") return json(res, 200, { ok: true });
+  const pathname = new URL(req.url, "http://x").pathname;
+  const fn = ROUTES[`${req.method} ${pathname}`];
+  if (fn) return Promise.resolve(fn(req, res)).catch((e) => { console.error(e); json(res, 500, { error: "Diçka shkoi keq." }); });
   if (req.method === "GET" || req.method === "HEAD") return serveStatic(req, res);
   res.writeHead(405); res.end();
-}).listen(PORT, "127.0.0.1", () => console.log(`kafe në :${PORT}`));
+}).listen(PORT, "127.0.0.1", () => console.log(`kafe (test) në :${PORT}`));
+
+process.on("SIGTERM", () => {
+  if (saveTimer) { clearTimeout(saveTimer); fs.writeFileSync(STATS, JSON.stringify(db)); }
+  process.exit(0);
+});
